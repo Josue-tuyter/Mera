@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\RegistroDeAtividades;
+use App\Models\User;
 
 class EquiposYHerramienta extends Model
 {
@@ -30,5 +31,10 @@ class EquiposYHerramienta extends Model
         return $this->belongsToMany(RegistroDeAtividades::class, 'registro_actividad_equipo', 'equipo_id', 'registro_id')
             ->withPivot(['nota'])
             ->withTimestamps();
+    }
+
+    public function responsable()
+    {
+        return $this->belongsTo(User::class, 'responsable_id');
     }
 }
