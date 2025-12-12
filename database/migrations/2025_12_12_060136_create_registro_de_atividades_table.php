@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('registro_de_atividades', function (Blueprint $table) {
-            $table->id();
+        if (! Schema::hasTable('registro_de_atividades')) {
+            Schema::create('registro_de_atividades', function (Blueprint $table) {
+                $table->id();
             // Fecha y hora de la actividad
             $table->date('fecha');
             $table->time('hora')->nullable();
@@ -34,25 +35,28 @@ return new class extends Migration
             $table->decimal('cantidad_producto', 10, 2)->nullable();
             $table->string('unidad')->nullable();
 
-            // Costo estimado o real de la actividad
-            $table->decimal('costo', 10, 2)->nullable();
-
             // Referencia al usuario/operario responsable (opcional)
             $table->foreignId('encargado_id')->nullable()->constrained('users')->nullOnDelete();
 
+            // Relación con organización (planificación / seguimiento) - FK añadida después
+            $table->unsignedBigInteger('organizacion_id')->nullable();
+
+            // Estado de la actividad (pendiente, en proceso, completado) - FK añadida después
+            $table->unsignedBigInteger('estado_id')->nullable();
+
             // Identificador de la parcela, lote o ubicación dentro de la finca
             $table->string('parcela')->nullable();
-
-            // Fecha prevista para la próxima actividad relacionada (si aplica)
-            $table->date('proxima_fecha')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
 
             // Índices para búsquedas frecuentes
-            $table->index('fecha');
-            $table->index('tipo_actividad');
-        });
+                $table->index('fecha');
+                $table->index('tipo_actividad');
+                $table->index('organizacion_id');
+                $table->index('estado_id');
+            });
+        }
     }
 
     /**
