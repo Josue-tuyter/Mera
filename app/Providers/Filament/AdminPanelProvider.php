@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation()
             //navbar retactil
             //->sidebarCollapsibleOnDesktop()
-            ->collapsedSidebarWidth('9rem')
+            //  ->collapsedSidebarWidth('9rem')
 
             //->sidebarFullyCollapsibleOnDesktop()
             ->favicon('favicon.ico')
@@ -52,7 +52,11 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
+                //FilamentInfoWidget::class,
+                \App\Filament\Widgets\ActivitiesOverTimeWidget::class,
+                \App\Filament\Widgets\MaterialsConsumptionWidget::class,
+                \App\Filament\Widgets\ActivityStatusWidget::class,
+                \App\Filament\Widgets\EquipmentMaintenanceWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
