@@ -16,9 +16,7 @@ class DatosGeneralesForm
     {
         return $schema
             ->components([
-                Section::make('Información de la finca')
-                 ->description('Datos necesarios')
-                    ->schema([
+
                         TextInput::make('nombre_finca')->label('Nombre de la finca')->required(),
                         TextInput::make('propietario')->label('Propietario')->required(),
                         TextInput::make('area_hectareas')->label('Área (ha)')->numeric()->nullable(),
@@ -32,20 +30,13 @@ class DatosGeneralesForm
                         TextInput::make('contacto_email')->label('Email de contacto')->email()->nullable(),
                         TextInput::make('telefono')->label('Teléfono')->tel()->nullable(),
                         Toggle::make('certificado_organico')->label('Certificado orgánico')->default(false),
-                        Textarea::make('notas')->label('Notas')->columnSpan('full'),
-                    
-                    ])
-                //->columns(2)
-                    ->compact()
-                ,
-                //  Section::make('Notas extras')
-                //  ->description('Notas adicionales sobre la finca')
-                // ->schema([
+                        Section::make('Notas extras')
+                        ->description('Notas adicionales sobre la finca')
+                            ->schema([
 
-                //     Textarea::make('notas')->label('Notas')->rows(2)->columnSpan('full'),
-                // ])
-                // ->secondary()
-                // ->compact()
+                                Textarea::make('notas')->label('Notas')->rows(2)->columnSpan('full'),
+                            ])
+                        ->secondary()
             ]);
     }
 }
