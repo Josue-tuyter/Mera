@@ -19,7 +19,8 @@ class EquiposYHerramientaResource extends Resource
 {
     protected static ?string $model = EquiposYHerramienta::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon ='heroicon-o-wrench';
+
     protected static string | UnitEnum | null $navigationGroup = 'Manejo de recursos';
 
     protected static ?string $recordTitleAttribute = 'Equipos y Herramientas';
