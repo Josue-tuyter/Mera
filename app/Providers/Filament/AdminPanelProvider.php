@@ -28,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            
 
             //para que le nav salga arriba
             ->topNavigation()
@@ -37,6 +38,7 @@ class AdminPanelProvider extends PanelProvider
 
             //->sidebarFullyCollapsibleOnDesktop()
             ->favicon('favicon.ico')
+            ->globalSearch(false) // Deshabilita el buscador global
             //logo de la aplicacion
             ->brandLogo(asset('images/logo.png'))
             //tamaño del logo

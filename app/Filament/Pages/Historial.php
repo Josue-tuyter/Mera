@@ -9,6 +9,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Illuminate\Database\Eloquent\Builder;
 use BackedEnum;
+use UnitEnum;
 
 
 class Historial extends Page implements HasTable
@@ -17,6 +18,7 @@ class Historial extends Page implements HasTable
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-check';
     protected static ?string $navigationLabel = 'Historial de actividades';
+    protected static string | UnitEnum | null $navigationGroup = 'Reportes';
     protected static ?string $title = 'Historial de actividades';
 
     protected string $view = 'filament.pages.historial';
