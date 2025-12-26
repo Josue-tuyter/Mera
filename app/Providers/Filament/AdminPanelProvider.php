@@ -18,6 +18,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Enums\UserMenuPosition;
+use Filament\Actions\Action;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,7 +30,21 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            
+            ->profile()
+
+
+            // ->loginRouteSlug('login')
+            // ->registrationRouteSlug('register')
+            // ->passwordResetRoutePrefix('password-reset')
+            // ->passwordResetRequestRouteSlug('request')
+            // ->passwordResetRouteSlug('reset')
+            // ->emailVerificationRoutePrefix('email-verification')
+            // ->emailVerificationPromptRouteSlug('prompt')
+            // ->emailVerificationRouteSlug('verify')
+            // ->emailChangeVerificationRoutePrefix('email-change-verification')
+            // ->emailChangeVerificationRouteSlug('verify')
+
+
 
             //para que le nav salga arriba
             ->topNavigation()

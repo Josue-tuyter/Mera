@@ -47,7 +47,7 @@ class DatosGeneralesResource extends Resource
         return [
             'index' => ListDatosGenerales::route('/'),
             'create' => CreateDatosGenerales::route('/create'),
-            'edit' => EditDatosGenerales::route('/{record}/edit'),
+            //'edit' => EditDatosGenerales::route('/{record}/edit'),
         ];
     }
 }

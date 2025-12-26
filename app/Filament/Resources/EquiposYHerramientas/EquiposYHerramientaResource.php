@@ -47,7 +47,7 @@ class EquiposYHerramientaResource extends Resource
         return [
             'index' => ListEquiposYHerramientas::route('/'),
             'create' => CreateEquiposYHerramienta::route('/create'),
-            'edit' => EditEquiposYHerramienta::route('/{record}/edit'),
+            //'edit' => EditEquiposYHerramienta::route('/{record}/edit'),
         ];
     }
 }

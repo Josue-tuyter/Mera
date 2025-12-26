@@ -4,28 +4,38 @@ namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
 use BackedEnum;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
-use Filament\Schemas\Schema;
-use Filament\Forms\Contracts\HasForms; // 1. Importar contrato
-use Filament\Forms\Concerns\InteractsWithForms; // 2. Importar trait
 use UnitEnum;
-// 3. AGREGAR "implements HasForms"
-class Reportes extends Page implements HasForms 
+
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\DatePicker;
+use Filament\Schemas\Schema;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Concerns\InteractsWithForms;
+
+use Maatwebsite\Excel\Facades\Excel;
+
+// Exports
+use App\Exports\RegistroActividadesExport;
+use App\Exports\EquiposYHerramientasExport;
+use App\Exports\MaterialesEInsumosExport;
+use App\Exports\UsuariosExport;
+
+class Reportes extends Page implements HasForms
 {
-    // 4. AGREGAR el trait dentro de la clase
     use InteractsWithForms;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-arrow-down';
     protected static ?string $navigationLabel = 'Reportes';
-    protected static string | UnitEnum | null $navigationGroup = 'Reportes';
+    protected static string|UnitEnum|null $navigationGroup = 'Reportes';
     protected static ?string $title = 'Reportes';
     protected string $view = 'filament.pages.reportes';
 
     /** Estado del formulario */
     public array $data = [];
 
-    // Este método ahora sí será reconocido
+    /**
+     * Formulario
+     */
     public function form(Schema $form): Schema
     {
         return $form
@@ -35,28 +45,66 @@ class Reportes extends Page implements HasForms
                     ->required()
                     ->options([
                         'actividades' => 'Registro de actividades',
-                        'equipos' => 'Equipos y herramientas',
-                        'insumos' => 'Materiales e insumos',
-                        'usuarios' => 'Usuarios',
-                        'organizacion' => 'Organización',
-                        'datos_generales' => 'Datos generales',
-                    ]),
+                        'equipos'     => 'Equipos y herramientas',
+                        'insumos'     => 'Materiales e insumos',
+                        'usuarios'    => 'Usuarios',
+                    ])
+                    ->reactive(),
 
                 Select::make('formato')
                     ->label('Formato')
                     ->required()
                     ->options([
-                        'pdf' => 'PDF',
                         'excel' => 'Excel',
+                        // 'pdf' => 'PDF' → luego
                     ]),
-            ])
-            ->statePath('data');
-    }
 
-    public function generarReporte(): void
+                DatePicker::make('fecha_inicio')
+                    ->label('Desde')
+                    ->visible(fn ($get) => $get('recurso') === 'actividades'),
+
+                DatePicker::make('fecha_fin')
+                    ->label('Hasta')
+                    ->visible(fn ($get) => $get('recurso') === 'actividades'),
+            ])
+            ->statePath('data');     
+                
+    }
+        public function generarReporte()
     {
-        // Validar y obtener los datos del formulario
-        $state = $this->form->getState(); 
-        dd($state);
+        $data = $this->form->getState();
+
+        if ($data['formato'] !== 'excel') {
+            return;
+        }
+
+        return match ($data['recurso']) {
+
+            'actividades' => Excel::download(
+                new RegistroActividadesExport(
+                    'Reporte de Registro de Actividades',
+                    $data['fecha_inicio'] ?? null,
+                    $data['fecha_fin'] ?? null
+                ),
+                'reporte_actividades.xlsx'
+            ),
+
+            'equipos' => Excel::download(
+                new EquiposYHerramientasExport(),
+                'reporte_equipos.xlsx'
+            ),
+
+            'insumos' => Excel::download(
+                new MaterialesEInsumosExport(),
+                'reporte_insumos.xlsx'
+            ),
+
+            'usuarios' => Excel::download(
+                new UsuariosExport(),
+                'reporte_usuarios.xlsx'
+            ),
+
+            default => null,
+        };
     }
 }
