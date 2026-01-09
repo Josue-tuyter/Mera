@@ -31,6 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile()
+            ->font('Kite One')
 
 
             // ->loginRouteSlug('login')
@@ -71,10 +72,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 //FilamentInfoWidget::class,
-                \App\Filament\Widgets\ActivitiesOverTimeWidget::class,
-                \App\Filament\Widgets\MaterialsConsumptionWidget::class,
-                \App\Filament\Widgets\ActivityStatusWidget::class,
-                \App\Filament\Widgets\EquipmentMaintenanceWidget::class,
+                
+
             ])
             ->middleware([
                 EncryptCookies::class,
