@@ -12,6 +12,7 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Concerns\InteractsWithForms;
 
+
 use Maatwebsite\Excel\Facades\Excel;
 
 // Exports
@@ -19,6 +20,16 @@ use App\Exports\RegistroActividadesExport;
 use App\Exports\EquiposYHerramientasExport;
 use App\Exports\MaterialesEInsumosExport;
 use App\Exports\UsuariosExport;
+
+
+//pdf
+
+use App\Pdf\{
+    RegistroAtividadesPdf,
+    EquiposYHerramientasPdf,
+    MaterialesEInsumosPdf,
+    UsuariosPdf
+};
 
 class Reportes extends Page implements HasForms
 {
@@ -56,7 +67,7 @@ class Reportes extends Page implements HasForms
                     ->required()
                     ->options([
                         'excel' => 'Excel',
-                        // 'pdf' => 'PDF' → luego
+                         'pdf' => 'PDF'
                     ]),
 
                 DatePicker::make('fecha_inicio')
@@ -74,37 +85,65 @@ class Reportes extends Page implements HasForms
     {
         $data = $this->form->getState();
 
-        if ($data['formato'] !== 'excel') {
+        if (! isset($data['formato'], $data['recurso'])) {
             return;
         }
 
-        return match ($data['recurso']) {
+        /*
+        |-------------------------------------------------
+        | EXCEL
+        |-------------------------------------------------
+        */
+        if ($data['formato'] === 'excel') {
 
-            'actividades' => Excel::download(
-                new RegistroActividadesExport(
-                    'Reporte de Registro de Actividades',
-                    $data['fecha_inicio'] ?? null,
-                    $data['fecha_fin'] ?? null
+            return match ($data['recurso']) {
+
+                'actividades' => Excel::download(
+                    new RegistroActividadesExport(
+                        'Reporte de Registro de Actividades',
+                        $data['fecha_inicio'] ?? null,
+                        $data['fecha_fin'] ?? null
+                    ),
+                    'reporte_actividades.xlsx'
                 ),
-                'reporte_actividades.xlsx'
-            ),
 
-            'equipos' => Excel::download(
-                new EquiposYHerramientasExport(),
-                'reporte_equipos.xlsx'
-            ),
+                'equipos' => Excel::download(
+                    new EquiposYHerramientasExport(),
+                    'reporte_equipos.xlsx'
+                ),
 
-            'insumos' => Excel::download(
-                new MaterialesEInsumosExport(),
-                'reporte_insumos.xlsx'
-            ),
+                'insumos' => Excel::download(
+                    new MaterialesEInsumosExport(),
+                    'reporte_insumos.xlsx'
+                ),
 
-            'usuarios' => Excel::download(
-                new UsuariosExport(),
-                'reporte_usuarios.xlsx'
-            ),
+                'usuarios' => Excel::download(
+                    new UsuariosExport(),
+                    'reporte_usuarios.xlsx'
+                ),
 
-            default => null,
-        };
+                default => null,
+            };
+        }
+
+        /*
+        |-------------------------------------------------
+        | PDF
+        |-------------------------------------------------
+        */
+    if ($data['formato'] === 'pdf') {
+
+    return match ($data['recurso']) {
+
+        'actividades' => (new RegistroAtividadesPdf(
+            $data['fecha_inicio'] ?? null,
+            $data['fecha_fin'] ?? null
+        ))->download('reporte_actividades.pdf'),
+
+        default => null,
+    };
+}
+
+
     }
 }

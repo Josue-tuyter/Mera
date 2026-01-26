@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         if (! Schema::hasTable('registro_de_atividades')) {
-            Schema::create('registro_de_atividades', function (Blueprint $table) {
+            Schema::create('c', function (Blueprint $table) {
                 $table->id();
             // Fecha y hora de la actividad
             $table->date('fecha');

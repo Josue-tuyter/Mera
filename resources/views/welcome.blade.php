@@ -3,124 +3,231 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <title>{{ config('app.name', 'Finca Cacao') }}</title>
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
         <style>
-            :root{--bg:#f3faf7;--text:#08341a;--muted:#4a6b58;--accent:#2f855a;--card:#ffffff}
-            body{font-family:Instrument Sans,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:linear-gradient(180deg, #f6fff9 0%, var(--bg) 100%);color:var(--text);-webkit-font-smoothing:antialiased;position:relative;min-height:100vh}
-            body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:
-                radial-gradient(600px circle at 10% 20%, rgba(255,238,245,0.28) 0%, transparent 28%),
-                radial-gradient(500px circle at 85% 75%, rgba(224,255,238,0.30) 0%, transparent 30%),
-                linear-gradient(120deg, rgba(245,255,250,0.65), rgba(250,255,245,0.6));opacity:0.45}
-            .container{max-width:1100px;margin:0 auto;padding:32px;position:relative;z-index:1}
-            .flex{display:flex}
-            .items-center{align-items:center}
-            .justify-between{justify-content:space-between}
-            .btn{background:linear-gradient(90deg,var(--accent),#48bb78);color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none;display:inline-block;box-shadow:0 8px 20px rgba(47,133,90,0.12);border:0;position:relative;z-index:2}
-            .btn:hover{transform:translateY(-2px)}
-            .btn-outline{background:transparent;border:1px solid rgba(47,133,90,0.14);color:var(--accent);padding:8px 14px;border-radius:10px;text-decoration:none}
-            .hero{display:flex;gap:28px;align-items:center}
-            .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(9,52,26,0.04);border:1px solid rgba(15,52,30,0.03)}
-            h1,h2,h3,h4{margin:0}
-            p{margin:12px 0;color:var(--muted)}
-            .kicker{display:inline-block;background:rgba(47,133,90,0.08);color:var(--accent);Padding:6px 10px;border-radius:999px;font-weight:600;font-size:13px}
-            .hero-visual{border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(15,52,30,0.06)}
-            @media (max-width:900px){.hero{flex-direction:column}.container{padding:20px}}
+            :root{
+                --bg1: #f7fff7; --bg2: #f0fff4; --text:#07321b; --muted:#4e6b55; --accent:#2f855a; --accent-2:#8bd3a9; --card:#ffffff;
+                --glass: rgba(255,255,255,0.55);
+            }
+            *{box-sizing:border-box}
+            body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+            .container{max-width:1100px;margin:0 auto;padding:36px;position:relative;z-index:2}
+            header .brand{display:flex;align-items:center;gap:12px}
+            .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;color:#fff;font-weight:700;box-shadow:0 6px 18px rgba(47,133,90,0.18)}
+            nav a{margin-left:12px;text-decoration:none;color:var(--text);padding:8px 12px;border-radius:10px;font-weight:600}
+            .btn{background:linear-gradient(90deg,var(--accent),#48bb78);color:#fff;padding:10px 18px;border-radius:12px;text-decoration:none;display:inline-block;box-shadow:0 10px 30px rgba(47,133,90,0.12);border:0}
+            .btn-outline{background:transparent;border:1px solid rgba(47,133,90,0.12);color:var(--accent);padding:8px 14px;border-radius:12px;text-decoration:none}
+
+            /* Hero */
+            .hero{display:flex;gap:28px;align-items:center;margin-top:18px}
+            .hero-left{flex:1}
+            .eyebrow{display:inline-block;background:rgba(47,133,90,0.08);color:var(--accent);padding:6px 12px;border-radius:999px;font-weight:700;font-size:13px}
+            h1{font-family:'Playfair Display',serif;font-size:40px;line-height:1.02;margin:12px 0}
+            .lead{color:var(--muted);font-size:16px;margin-bottom:16px}
+            .actions{display:flex;gap:10px;margin-top:14px}
+
+            /* Visual card */
+            .visual{width:380px;border-radius:16px;overflow:hidden;position:relative;box-shadow:0 30px 60px rgba(9,52,26,0.06)}
+            .visual img{width:100%;height:250px;object-fit:cover;display:block;transform:scale(1);transition:transform .7s cubic-bezier(.2,.9,.2,1)}
+            .visual:hover img{transform:scale(1.06)}
+            .card-body{padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6));backdrop-filter:blur(4px)}
+            .kicker{display:inline-block;background:rgba(47,133,90,0.09);color:var(--accent);padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px}
+
+            /* Grid */
+            .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:22px}
+            .feature{background:var(--card);padding:18px;border-radius:12px;border:1px solid rgba(12,40,20,0.04);box-shadow:0 6px 20px rgba(11,45,21,0.03);transition:transform .3s,box-shadow .3s}
+            .feature:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(11,45,21,0.06)}
+
+            /* Floating shapes */
+            .float-shape{position:fixed;pointer-events:none;z-index:0;filter:blur(22px);opacity:0.85}
+            .shape1{width:360px;height:360px;left:-80px;top:-60px;background:radial-gradient(circle at 30% 30%, rgba(143,197,148,0.35), transparent 30%)}
+            .shape2{width:300px;height:300px;right:-80px;bottom:-80px;background:radial-gradient(circle at 70% 70%, rgba(200,245,221,0.3), transparent 30%)}
+
+            /* Footer */
+            footer{margin-top:36px;padding:22px 0;color:var(--muted);text-align:center}
+
+            /* Responsive */
+            @media (max-width:900px){
+                .hero{flex-direction:column}
+                .visual{width:100%}
+                header .container{padding:20px}
+                h1{font-size:28px}
+            }
+
+            /* Small animation */
+            .reveal{opacity:0;transform:translateY(10px);transition:opacity .6s ease,transform .6s ease}
+            .reveal.active{opacity:1;transform:none}
         </style>
     </head>
     <body>
-        <header class="container">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h2 style="margin:0;color:var(--accent);font-weight:700">Finca Cacao</h2>
-                    <div style="font-size:13px;color:#6b6b6b">Cultivo, tradición y sostenibilidad</div>
+        <div class="float-shape shape1" aria-hidden></div>
+        <div class="float-shape shape2" aria-hidden></div>
+
+        <header>
+            <div class="container">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                    <div class="brand">
+                        <div class="logo">FC</div>
+                        <div>
+                            <div style="font-weight:700;color:var(--accent);font-size:18px">Finca Cacao</div>
+                            <div style="font-size:13px;color:var(--muted)">Cultivo, tradición y sostenibilidad</div>
+                        </div>
+                    </div>
+                    <nav style="display:flex;align-items:center">
+                        <a href="{{ url('/') }}" class="btn-outline">Inicio</a>
+                        <a href="{{ url('/historia') }}" class="btn-outline">Historia</a>
+                        <a href="{{ url('/metodos') }}" class="btn-outline">Métodos</a>
+                        <a href="#mapa" class="btn-outline">Mapa</a>
+                        <a href="{{ url('/admin/login') }}" class="btn">Acceso</a>
+                    </nav>
                 </div>
-                <nav class="flex items-center" style="gap:12px">
-                    <a href="#inicio" class="btn-outline">Inicio</a>
-                    <a href="#nosotros" class="btn-outline">Nosotros</a>
-                    <a href="{{ url('/admin/login') }}" class="btn">Acceso</a>
-                </nav>
             </div>
         </header>
 
-        <main class="container" id="inicio" style="padding-top:20px">
+        <main class="container" id="inicio">
             <section class="hero">
-                <div style="flex:1">
-                    <h1 style="font-size:36px;line-height:1.05">Las labores culturales del cacao</h1>
-                    <div style="font-size:16px;color:#6b6b6b;margin-top:6px">Prácticas tradicionales y técnicas modernas para un cacao de calidad</div>
-                    <p>En nuestra finca combinamos conocimiento ancestral y buenas prácticas agrícolas para producir granos de cacao excepcionales. A continuación resumimos las labores culturales que realizamos durante el ciclo productivo.</p>
+                <div class="hero-left">
+                    <span class="eyebrow reveal">Sostenible • Local • Artesanal</span>
+                    <h1 class="reveal">Labores culturales del cacao — tradición que se renueva</h1>
+                    <div class="lead reveal">Combinamos prácticas ancestrales con técnicas modernas para producir granos de cacao con identidad y calidad.</div>
 
-                    <div style="margin-top:12px">
-                        <a href="#que-hacemos" class="btn" style="margin-right:8px">Qué hacemos</a>
+                    <div class="actions reveal">
+                        <a href="#que-hacemos" class="btn">Descubrir</a>
                         <a href="#mapa" class="btn-outline">Ver mapa</a>
                     </div>
                 </div>
 
-                <div style="width:360px">
-                    <div class="card hero-visual">
-                        <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=900&q=60" alt="Cacao" style="width:100%;height:220px;object-fit:cover;display:block">
-                        <div style="padding:16px">
-                            <div class="kicker">Sostenible</div>
-                            <h3 style="margin:12px 0 6px">Cosecha y calidad</h3>
-                            <p style="margin:0;color:var(--muted);font-size:14px">Cosecha manual selectiva y procesos de fermentación y secado que garantizan aromas ricos y equilibrados.</p>
-                        </div>
+                <aside class="visual card reveal" aria-hidden>
+                    <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1200&q=60" alt="Cacao" loading="lazy">
+                    <div class="card-body">
+                        <div class="kicker">Hecho con cuidado</div>
+                        <h3 style="margin:10px 0 6px">Cosecha y calidad</h3>
+                        <p style="margin:0;color:var(--muted);font-size:14px">Cosecha manual selectiva, fermentación controlada y secado para aromas equilibrados.</p>
                     </div>
-                </div>
+                </aside>
             </section>
 
-            <section id="que-hacemos" style="margin-top:28px">
-                <h2>Labores culturales principales</h2>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:12px">
-                    <div class="card">
+            <section id="que-hacemos" style="margin-top:26px">
+                <h2 class="reveal">Labores culturales principales</h2>
+                <div class="grid">
+                    <div class="feature reveal">
                         <h4>Siembra y establecimiento</h4>
-                        <p>Selección de plantones, preparación de suelos y control de sombra para un arranque vigoroso.</p>
+                        <p style="margin-top:8px;color:var(--muted)">Selección de plantones, preparación de suelos y manejo de sombra.</p>
                     </div>
-                    <div class="card">
+                    <div class="feature reveal">
                         <h4>Poda y formación</h4>
-                        <p>Poda estructural para mejorar la ventilación, luminosidad y sanidad del cultivo.</p>
+                        <p style="margin-top:8px;color:var(--muted)">Poda estructural para mejorar ventilación y sanidad del cultivo.</p>
                     </div>
-                    <div class="card">
-                        <h4>Manejo de plagas y enfermedades</h4>
-                        <p>Monitoreo, control biológico y prácticas integradas para reducir impactos.</p>
+                    <div class="feature reveal">
+                        <h4>Manejo integrado</h4>
+                        <p style="margin-top:8px;color:var(--muted)">Monitoreo y control biológico para reducir impactos ambientales.</p>
                     </div>
-                    <div class="card">
-                        <h4>Fertilización y enmiendas</h4>
-                        <p>Aplicaciones balanceadas basadas en análisis de suelo para mantener productividad.</p>
+                    <div class="feature reveal">
+                        <h4>Fertilización</h4>
+                        <p style="margin-top:8px;color:var(--muted)">Aplicaciones basadas en análisis para mantener productividad sostenible.</p>
                     </div>
-                    <div class="card">
-                        <h4>Cosecha, fermentación y secado</h4>
-                        <p>Cosecha manual, fermentación controlada y secado a temperatura adecuada para conservar calidad.</p>
+                    <div class="feature reveal">
+                        <h4>Postcosecha</h4>
+                        <p style="margin-top:8px;color:var(--muted)">Fermentación y secado controlado para conservar perfiles de aroma.</p>
                     </div>
-                    <div class="card">
-                        <h4>Postcosecha y trazabilidad</h4>
-                        <p>Registro de lotes, trazabilidad y buenas prácticas de almacenamiento.</p>
+                    <div class="feature reveal">
+                        <h4>Trazabilidad</h4>
+                        <p style="margin-top:8px;color:var(--muted)">Registro de lotes y buenas prácticas de almacenamiento.</p>
                     </div>
                 </div>
             </section>
 
-            <section id="nosotros" style="margin-top:28px">
-                <h2>Nuestra historia</h2>
-                <p>Somos una finca familiar con décadas de experiencia en el cultivo del cacao. Trabajamos con comunidades locales, promovemos la sostenibilidad y buscamos mejorar continuamente la calidad de nuestros productos a través de prácticas respetuosas con el medio ambiente.</p>
-            </section>
-
-            <section id="mapa" style="margin-top:28px">
-                <h2>Ubicación</h2>
-                <p style="color:#6b6b6b;margin-bottom:8px">Mapa aproximado de la ubicación de la finca. Puedo integrar Google Maps si nos compartes la API key.</p>
-                <div class="card">
-                    <iframe width="100%" height="320" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=-76.0%2C-3.5%2C-74.0%2C-2.0&layer=mapnik&marker=-3.0,-75.0" style="border-radius:8px"></iframe>
-                    <div style="font-size:12px;color:#999;margin-top:8px">Mapa: OpenStreetMap — ubicación aproximada</div>
+            <section id="galeria" style="margin-top:28px">
+                <h2 class="reveal">Galería</h2>
+                <p style="color:var(--muted);margin-bottom:12px">Imágenes reales de la finca y nuestras labores.</p>
+                <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px">
+                    <div class="feature reveal" style="padding:0;overflow:hidden;">
+                        <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=60" alt="Cacao 1" style="width:100%;height:160px;object-fit:cover;transition:transform .6s;display:block">
+                    </div>
+                    <div class="feature reveal" style="padding:0;overflow:hidden;">
+                        <img src="https://images.unsplash.com/photo-1524594154904-cc29446f8e1b?auto=format&fit=crop&w=800&q=60" alt="Cacao 2" style="width:100%;height:160px;object-fit:cover;transition:transform .6s;display:block">
+                    </div>
+                    <div class="feature reveal" style="padding:0;overflow:hidden;">
+                        <img src="https://images.unsplash.com/photo-1506806732259-39c2d0268443?auto=format&fit=crop&w=800&q=60" alt="Cacao 3" style="width:100%;height:160px;object-fit:cover;transition:transform .6s;display:block">
+                    </div>
+                    <div class="feature reveal" style="padding:0;overflow:hidden;">
+                        <img src="https://images.unsplash.com/photo-1472220625704-91e1462799b2?auto=format&fit=crop&w=800&q=60" alt="Cacao 4" style="width:100%;height:160px;object-fit:cover;transition:transform .6s;display:block">
+                    </div>
                 </div>
             </section>
 
-                <footer style="margin-top:28px;padding:22px 0;color:var(--muted);text-align:center">
+                <section id="mapa" style="margin-top:28px">
+                    <h2 class="reveal">Ubicación</h2>
+                    <p style="color:var(--muted);margin-bottom:8px">Ecuentranos en <strong>El Triunfo, Guayas, Ecuador</strong>.</p>
+                    <div id="map-wrap" style="border-radius:12px;overflow:hidden;border:1px solid rgba(12,40,20,0.03);min-height:340px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,0.6),transparent);">
+                        <div id="map-loading" style="color:var(--muted);padding:18px">Buscando ubicación de <strong>El Triunfo, Guayas, Ecuador</strong>…</div>
+                    </div>
+
+                    <script>
+                        (function(){
+                            const wrap = document.getElementById('map-wrap');
+                            const loading = document.getElementById('map-loading');
+                            const query = 'El Triunfo, Guayas, Ecuador';
+
+                            // Use Nominatim to geocode the locality
+                            fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(query))
+                            .then(r => r.json())
+                            .then(results => {
+                                if(!results || !results.length) throw new Error('No encontrado');
+                                const lat = parseFloat(results[0].lat);
+                                const lon = parseFloat(results[0].lon);
+
+                                // Small bbox around the point
+                                const delta = 0.06; // ~6km box, adjust if needed
+                                const left = (lon - delta).toFixed(6);
+                                const bottom = (lat - delta).toFixed(6);
+                                const right = (lon + delta).toFixed(6);
+                                const top = (lat + delta).toFixed(6);
+
+                                const src = 'https://www.openstreetmap.org/export/embed.html?bbox=' + left + '%2C' + bottom + '%2C' + right + '%2C' + top + '&layer=mapnik&marker=' + lat + '%2C' + lon;
+
+                                const iframe = document.createElement('iframe');
+                                iframe.width = '100%';
+                                iframe.height = '340';
+                                iframe.frameBorder = '0';
+                                iframe.scrolling = 'no';
+                                iframe.marginHeight = '0';
+                                iframe.marginWidth = '0';
+                                iframe.style.display = 'block';
+                                iframe.src = src;
+
+                                // Replace loading with iframe
+                                wrap.innerHTML = '';
+                                wrap.appendChild(iframe);
+                            })
+                            .catch(err => {
+                                loading.textContent = 'No se pudo obtener la ubicación automáticamente. Puedes buscarla manualmente.';
+                                console.warn('Geocoding error:', err);
+                            });
+                        })();
+                    </script>
+                </section>
+
+            <footer>
                 <div>© {{ date('Y') }} Finca Cacao — Todos los derechos reservados</div>
                 <div style="margin-top:8px"><a href="{{ url('/admin/login') }}" class="btn">Acceso administrador</a></div>
             </footer>
         </main>
+
+        <script>
+            // Small reveal-on-scroll
+            function revealOnScroll(){
+                document.querySelectorAll('.reveal').forEach(el=>{
+                    const rect = el.getBoundingClientRect();
+                    if(rect.top < window.innerHeight - 60){ el.classList.add('active'); }
+                });
+            }
+            window.addEventListener('scroll', revealOnScroll);
+            window.addEventListener('load', () => { revealOnScroll(); });
+        </script>
     </body>
 </html>
