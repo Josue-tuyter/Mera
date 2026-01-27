@@ -14,16 +14,51 @@ class UserForm
             ->components([
                 TextInput::make('name')
                     ->label('Nombre')
-                    ->required(),
+                    ->required()
+                    ->maxLength(100)
+                    ->regex('/^[a-zA-Záéíóúñ\\s]+$/')
+                    ->validationMessages([
+                        'regex' => 'El nombre solo puede contener letras y espacios',
+                    ])
+                    ->live(),
+
                 TextInput::make('email')
-                    ->label('Correo Electrónico')
-                    ->email()
-                    ->required(),
-                DateTimePicker::make('email_verified_at'),
+                    ->label('Correo electrónico')
+                    ->maxLength(100)
+                    ->nullable()
+                    ->required()
+                    ->live(onBlur: true)
+                    ->rules([
+                        'nullable',
+                        'email:rfc,dns',
+                        'not_regex:/@(mailinator|tempmail|guerrillamail|10minutemail|yopmail|dispostable|throwawaymail|fakeinbox|sharklasers|getnada)\./i',
+                    ])
+                    ->validationMessages([
+                        'email' => 'El correo electrónico no tiene un formato válido o el dominio no existe',
+                        'not_regex' => 'No se permiten correos temporales',
+                    ]) ,
+
                 TextInput::make('password')
                     ->label('Contraseña')
                     ->password()
-                    ->required(),
+                    ->required()
+                    ->revealable()
+                    ->required()
+                    ->minLength(8)
+                    ->maxLength(100)
+                    ->live(onBlur: true)
+                    ->rules([
+                        'required',
+                        'min:8',
+                        'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
+                    ])
+                    ->validationMessages([
+                        'required' => 'La contraseña es obligatoria',
+                        'min' => 'La contraseña debe tener al menos 8 caracteres',
+                        'regex' => 'Debe contener al menos una mayúscula, una minúscula y un número',
+                    ])
+                    ->dehydrateStateUsing(fn ($state) => bcrypt($state))
+                    ->visibleOn('create')
             ]);
     }
 }

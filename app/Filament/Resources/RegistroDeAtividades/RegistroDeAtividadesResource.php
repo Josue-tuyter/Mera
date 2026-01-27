@@ -22,8 +22,16 @@ class RegistroDeAtividadesResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static string | UnitEnum | null $navigationGroup = 'Gestión de actividades';
-    
-    protected static ?string $recordTitleAttribute = 'Registro de Atividades';
+
+    protected static ?string $navigationLabel = 'Registro de Actividades';
+    protected static ?string $modelLabel = 'Registro de Actividad';
+    protected static ?string $pluralModelLabel = 'Registro de Actividades';
+
+    public static function getBreadcrumb(): string
+    {
+        return 'Registro de Actividades';
+    }
+
 
     public static function form(Schema $schema): Schema
     {

@@ -30,10 +30,30 @@ class RegistroAtividadesPdf extends BaseReportePdf
             $query->whereBetween('fecha', [$this->fechaInicio, $this->fechaFin]);
         }
 
+        $registros = $query->get()->map(function ($registro) {
+            // Encode string fields
+            $registro->descripcion = $this->utf8($registro->descripcion);
+            $registro->tipo_actividad = $this->utf8($registro->tipo_actividad);
+            $registro->parcela = $this->utf8($registro->parcela);
+            $registro->hora = $this->utf8($registro->hora);
+            
+            // Encode related model fields
+            if ($registro->encargado) {
+                $registro->encargado->name = $this->utf8($registro->encargado->name);
+            }
+            
+            if ($registro->estado) {
+                $registro->estado->nombre = $this->utf8($registro->estado->nombre);
+            }
+
+            return $registro;
+        });
+
         return [
-            'registros' => $query->get(),
+            'registros' => $registros,
             'fechaInicio' => $this->fechaInicio,
             'fechaFin' => $this->fechaFin,
         ];
     }
+
 }

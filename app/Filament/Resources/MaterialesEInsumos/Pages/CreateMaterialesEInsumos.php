@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateMaterialesEInsumos extends CreateRecord
 {
     protected static string $resource = MaterialesEInsumosResource::class;
+
+        protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

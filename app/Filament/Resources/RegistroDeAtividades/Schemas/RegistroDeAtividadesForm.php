@@ -56,24 +56,55 @@ class RegistroDeAtividadesForm
                 TextInput::make('duracion_minutos')
                     ->label('Duración (minutos)')
                     ->numeric()
+                    ->minValue(1)
+                    ->maxValue(1440)
                     ->nullable(),
 
-                TextInput::make('parcela')->label('Parcela')->nullable(),
+                TextInput::make('parcela')
+                    ->label('Parcela')
+                    ->maxLength(50)
+                    ->regex('/^[a-zA-Z0-9\\-\\/\\s]+$/')
+                    ->validationMessages([
+                        'regex' => 'Solo se permiten letras, números, guiones, barras y espacios',
+                    ])
+                    ->live()
+                    ->nullable(),
 
-                TextInput::make('producto_aplicado')->label('Producto aplicado')->nullable(),
+                TextInput::make('producto_aplicado')
+                    ->label('Producto aplicado')
+                    ->maxLength(100)
+                    ->regex('/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-,.]+$/')
+                    ->validationMessages([
+                        'regex' => 'Solo se permiten letras, números, espacios y caracteres especiales básicos',
+                    ])
+                    ->live()
+                    ->nullable(),
 
                 TextInput::make('cantidad_producto')
                     ->label('Cantidad producto')
                     ->numeric()
+                    ->minValue(0)
+                    ->maxValue(99999.99)
+                    ->step(0.01)
                     ->nullable(),
 
-                TextInput::make('unidad')->label('Unidad')->nullable(),
+                TextInput::make('unidad')
+                    ->label('Unidad')
+                    ->maxLength(30)
+                    ->regex('/^[a-zA-Z\\s\\-]+$/')
+                    ->validationMessages([
+                        'regex' => 'Solo se permiten letras, espacios y guiones',
+                    ])
+                    ->live()
+                    ->nullable(),
 
                 Textarea::make('descripcion')
                     ->label('Descripción')
+                    ->maxLength(500)
                     ->rows(4)
                     ->columnSpan('full')
-                    ->nullable(),
+                    ->nullable()
+                    ->helperText('Máximo 500 caracteres'),
 
                 MultiSelect::make('equipos')
                     ->label('Equipos y herramientas')

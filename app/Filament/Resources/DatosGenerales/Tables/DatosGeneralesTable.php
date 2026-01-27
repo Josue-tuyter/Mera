@@ -25,7 +25,7 @@ class DatosGeneralesTable
                 TextColumn::make('variedad_cacao')->label('Variedad')->toggleable()->searchable(),
                 TextColumn::make('altitud_m')->label('Altitud (m)')->toggleable(),
                 TextColumn::make('lluvia_media_mm')->label('Lluvia media (mm)')->toggleable(),
-                BooleanColumn::make('certificado_organico')->label('Orgánico')->trueIcon('heroicon-o-check')->falseIcon('heroicon-o-x-circle')->toggleable(),
+                TextColumn::make('certificado_organico')->label('Orgánico')->toggleable(),
                 TextColumn::make('contacto_email')->label('Email')->toggleable(),
                 TextColumn::make('telefono')->label('Teléfono')->toggleable(),
                 TextColumn::make('notas')->label('Notas')->limit(50)->wrap()->toggleable(),
@@ -38,8 +38,12 @@ class DatosGeneralesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->modalHeading('Eliminar Datos Generales')
+                        ->modalDescription('¿Está seguro de que desea eliminar los datos generales? Esta es una acción crítica.'),
                 ]),
-            ]);
+            ])
+            ->paginated([10]); // Mostrar máximo 10 registros por página
     }
 }

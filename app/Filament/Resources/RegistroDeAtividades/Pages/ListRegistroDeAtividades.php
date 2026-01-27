@@ -16,4 +16,6 @@ class ListRegistroDeAtividades extends ListRecords
             CreateAction::make(),
         ];
     }
+
+
 }

@@ -29,7 +29,7 @@ use App\Pdf\{
     EquiposYHerramientasPdf,
     MaterialesEInsumosPdf,
     UsuariosPdf
-};
+};  
 
 class Reportes extends Page implements HasForms
 {
@@ -81,7 +81,7 @@ class Reportes extends Page implements HasForms
             ->statePath('data');     
                 
     }
-        public function generarReporte()
+    public function generarReporte()
     {
         $data = $this->form->getState();
 
@@ -89,11 +89,9 @@ class Reportes extends Page implements HasForms
             return;
         }
 
-        /*
-        |-------------------------------------------------
-        | EXCEL
-        |-------------------------------------------------
-        */
+        // ---------------------------
+        // EXCEL
+        // ---------------------------
         if ($data['formato'] === 'excel') {
 
             return match ($data['recurso']) {
@@ -126,24 +124,26 @@ class Reportes extends Page implements HasForms
             };
         }
 
-        /*
-        |-------------------------------------------------
-        | PDF
-        |-------------------------------------------------
-        */
-    if ($data['formato'] === 'pdf') {
+        // ---------------------------
+        // PDF
+        // ---------------------------
+        if ($data['formato'] === 'pdf') {
 
-    return match ($data['recurso']) {
+            return match ($data['recurso']) {
 
-        'actividades' => (new RegistroAtividadesPdf(
-            $data['fecha_inicio'] ?? null,
-            $data['fecha_fin'] ?? null
-        ))->download('reporte_actividades.pdf'),
+                'actividades' => $this->redirectRoute('pdf.actividades', [
+                    'inicio' => $data['fecha_inicio'] ?? null,
+                    'fin' => $data['fecha_fin'] ?? null,
+                ]),
 
-        default => null,
-    };
-}
+                'equipos' => $this->redirectRoute('pdf.equipos'),
 
+                'insumos' => $this->redirectRoute('pdf.insumos'),
 
+                'usuarios' => $this->redirectRoute('pdf.usuarios'),
+
+                default => null,
+            };
+        }
     }
 }

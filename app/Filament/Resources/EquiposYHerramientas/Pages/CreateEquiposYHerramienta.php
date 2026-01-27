@@ -8,4 +8,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateEquiposYHerramienta extends CreateRecord
 {
     protected static string $resource = EquiposYHerramientaResource::class;
+        protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

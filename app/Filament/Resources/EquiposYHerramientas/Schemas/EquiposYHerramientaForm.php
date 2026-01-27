@@ -18,17 +18,29 @@ class EquiposYHerramientaForm
                 TextInput::make('nombre')
                     ->label('Nombre')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(100)
+                    ->regex('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/')
+                    ->validationMessages([
+                        'regex' => 'Solo se permiten letras, espacios y guiones',
+                    ])
+                    ->live(),
 
                 Textarea::make('descripcion')
                     ->label('Descripción')
+                    ->maxLength(500)
                     ->rows(3)
-                    ->nullable(),
+                    ->nullable()
+                    ->helperText('Máximo 500 caracteres'),
 
                 TextInput::make('serial')
                     ->label('Serial')
                     ->nullable()
-                    ->maxLength(100),
+                    ->maxLength(50)
+                    ->regex('/^[a-zA-Z0-9\-\/]+$/')
+                    ->validationMessages([
+                        'regex' => 'Solo se permiten letras, números, guiones y barras',
+                    ])
+                    ->live(),
 
                 Toggle::make('disponible')
                     ->label('Disponible')
@@ -40,14 +52,28 @@ class EquiposYHerramientaForm
 
                 DatePicker::make('proximo_mantenimiento')
                     ->label('Próximo mantenimiento')
-                    ->nullable(),
-
+                    ->nullable()
+                    ->reactive()
+                    ->minDate(today())
+                    ->rules([
+                        'nullable',
+                        'date',
+                        'after_or_equal:today',
+                    ])
+                    ->validationMessages([
+                        'after_or_equal' => 'No se permiten fechas pasadas',
+                    ]),
                 TextInput::make('intervalo_mantenimiento_dias')
                     ->label('Intervalo mantenimiento (días)')
                     ->numeric()
+                    ->minValue(1)
+                    ->maxValue(9999)
                     ->nullable(),
 
-                TextInput::make('ubicacion')->label('Ubicación')->nullable(),
+                TextInput::make('ubicacion')
+                    ->label('Ubicación')
+                    ->maxLength(100)
+                    ->nullable(),
 
                 Select::make('responsable_id')
                     ->label('Responsable')
@@ -57,6 +83,9 @@ class EquiposYHerramientaForm
                 TextInput::make('costo_mantenimiento_estimado')
                     ->label('Costo mantenimiento estimado')
                     ->numeric()
+                    ->minValue(0)
+                    ->maxValue(999999.99)
+                    ->step(0.01)
                     ->nullable(),
             ]);
     }
