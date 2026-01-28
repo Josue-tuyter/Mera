@@ -13,11 +13,24 @@ return new class extends Migration
     {
         Schema::create('registro_actividad_material', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('registro_id')->constrained('registro_de_atividades')->cascadeOnDelete();
-            $table->foreignId('material_id')->constrained('materiales_e_insumos')->cascadeOnDelete();
-            $table->decimal('cantidad_usada', 10, 2)->nullable();
-            $table->string('unidad')->nullable();
+            
+            $table->foreignId('registro_de_atividades_id')
+                ->constrained('registro_de_atividades')
+                ->cascadeOnDelete();
+
+            $table->foreignId('materiales_e_insumos_id')
+                ->constrained('materiales_e_insumos')
+                ->cascadeOnDelete();
+
+            $table->decimal('cantidad', 10, 2);
+            $table->string('unidad', 30);
+
             $table->timestamps();
+
+            $table->unique(
+                ['registro_de_atividades_id', 'materiales_e_insumos_id'],
+                'registro_material_unique'
+            );
         });
     }
 

@@ -13,8 +13,15 @@ return new class extends Migration
     {
         Schema::create('registro_actividad_equipo', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('registro_id')->constrained('registro_de_atividades')->cascadeOnDelete();
-            $table->foreignId('equipo_id')->constrained('equipos_y_herramientas')->cascadeOnDelete();
+
+            $table->foreignId('registro_de_atividades_id')
+                ->constrained('registro_de_atividades')
+                ->cascadeOnDelete();
+
+            $table->foreignId('equipos_y_herramientas_id')
+                ->constrained('equipos_y_herramientas')
+                ->cascadeOnDelete();
+
             $table->string('nota')->nullable();
             $table->timestamps();
         });

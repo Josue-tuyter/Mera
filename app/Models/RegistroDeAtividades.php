@@ -11,6 +11,7 @@ use App\Models\Organizacion;
 use App\Models\Estado;
 use App\Models\EquiposYHerramienta;
 use App\Models\MaterialesEInsumos;
+use App\Models\RegistroActividadMaterial;
 
 class RegistroDeAtividades extends Model
 {
@@ -56,15 +57,23 @@ class RegistroDeAtividades extends Model
 
     public function equipos()
     {
-        return $this->belongsToMany(EquiposYHerramienta::class, 'registro_actividad_equipo', 'registro_id', 'equipo_id')
-            ->withPivot('nota')
-            ->withTimestamps();
+        return $this->belongsToMany(
+            \App\Models\EquiposYHerramienta::class,
+            'registro_actividad_equipo',
+            'registro_de_atividades_id',
+            'equipos_y_herramientas_id'
+        )->withTimestamps();
     }
+
 
     public function materiales()
     {
-        return $this->belongsToMany(MaterialesEInsumos::class, 'registro_actividad_material', 'registro_id', 'material_id')
-            ->withPivot(['cantidad_usada', 'unidad'])
-            ->withTimestamps();
+        return $this->belongsToMany(
+            MaterialesEInsumos::class,
+            'registro_actividad_material',
+            'registro_de_atividades_id',
+            'materiales_e_insumos_id'
+        )->withPivot(['cantidad', 'unidad'])->withTimestamps();
     }
+
 }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\RegistroDeAtividades;
 use App\Models\User;
 
+
 class EquiposYHerramienta extends Model
 {
     use HasFactory, SoftDeletes;
@@ -28,9 +29,12 @@ class EquiposYHerramienta extends Model
 
     public function registros()
     {
-        return $this->belongsToMany(RegistroDeAtividades::class, 'registro_actividad_equipo', 'equipo_id', 'registro_id')
-            ->withPivot(['nota'])
-            ->withTimestamps();
+        return $this->belongsToMany(
+            \App\Models\RegistroDeAtividades::class,
+            'registro_actividad_equipo',
+            'equipos_y_herramientas_id',
+            'registro_de_atividades_id'
+        )->withTimestamps();
     }
 
     public function responsable()

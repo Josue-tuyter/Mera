@@ -170,13 +170,3 @@ class MaterialesEInsumosForm
             ]);
     }
 }
-/*                     ->searchable()
-                    ->nullable(),
-                
-                Toggle::make('activo')
-                    ->label('Activo')
-                    ->default(true)
-            ]);
-    }
-}
- */

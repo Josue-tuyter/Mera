@@ -8,9 +8,11 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\MultiSelect;
-use App\Models\EquiposYHerramienta;
+use Filament\Forms\Components\Repeater;
 use App\Models\MaterialesEInsumos;
+
+
+use Filament\Forms\Components\MultiSelect;
 
 class RegistroDeAtividadesForm
 {
@@ -18,8 +20,13 @@ class RegistroDeAtividadesForm
     {
         return $schema
             ->components([
-                DatePicker::make('fecha')->label('Fecha')->required(),
-                TimePicker::make('hora')->label('Hora')->nullable(),
+                DatePicker::make('fecha')
+                    ->label('Fecha')
+                    ->required(),
+
+                TimePicker::make('hora')
+                    ->label('Hora')
+                    ->nullable(),
 
                 Select::make('tipo_actividad')
                     ->label('Tipo de actividad')
@@ -67,36 +74,44 @@ class RegistroDeAtividadesForm
                     ->validationMessages([
                         'regex' => 'Solo se permiten letras, números, guiones, barras y espacios',
                     ])
-                    ->live()
                     ->nullable(),
 
-                TextInput::make('producto_aplicado')
-                    ->label('Producto aplicado')
-                    ->maxLength(100)
-                    ->regex('/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-,.]+$/')
-                    ->validationMessages([
-                        'regex' => 'Solo se permiten letras, números, espacios y caracteres especiales básicos',
-                    ])
-                    ->live()
-                    ->nullable(),
+                /** 🔹 MATERIALES E INSUMOS (PIVOT) */
+        Repeater::make('materiales')
+            ->label('Materiales e insumos usados')
+            ->relationship('materiales')
+            ->schema([
+                Select::make('materiales_e_insumos_id')
+                    ->label('Material / Insumo')
+                    ->options(
+                        MaterialesEInsumos::pluck('nombre', 'id')
+                    )
+                    ->searchable()
+                    ->required()
+                    ->reactive(),
 
-                TextInput::make('cantidad_producto')
-                    ->label('Cantidad producto')
+                TextInput::make('cantidad')
+                    ->label('Cantidad usada')
                     ->numeric()
-                    ->minValue(0)
-                    ->maxValue(99999.99)
-                    ->step(0.01)
-                    ->nullable(),
+                    ->minValue(0.01)
+                    ->required(),
 
                 TextInput::make('unidad')
                     ->label('Unidad')
-                    ->maxLength(30)
-                    ->regex('/^[a-zA-Z\\s\\-]+$/')
-                    ->validationMessages([
-                        'regex' => 'Solo se permiten letras, espacios y guiones',
-                    ])
-                    ->live()
-                    ->nullable(),
+                    ->disabled()
+                    ->dehydrated()
+                    ->afterStateUpdated(function ($set, $get) {
+                        $material = MaterialesEInsumos::find(
+                            $get('materiales_e_insumos_id')
+                        );
+
+                        if ($material) {
+                            $set('unidad', $material->unidad);
+                        }
+                    }),
+            ])
+            ->columnSpan('full'),
+
 
                 Textarea::make('descripcion')
                     ->label('Descripción')
@@ -106,17 +121,13 @@ class RegistroDeAtividadesForm
                     ->nullable()
                     ->helperText('Máximo 500 caracteres'),
 
-                MultiSelect::make('equipos')
+                Select::make('equipos')
                     ->label('Equipos y herramientas')
                     ->relationship('equipos', 'nombre')
-                    ->helperText('Selecciona los equipos/herramientas utilizados')
-                    ->preload(),
-
-                MultiSelect::make('materiales')
-                    ->label('Materiales e insumos')
-                    ->relationship('materiales', 'nombre')
-                    ->helperText('Selecciona materiales/insumos usados (detalle de cantidad en pivots)')
-                    ->preload(),
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->helperText('Selecciona los equipos/herramientas utilizados'),
             ]);
     }
 }

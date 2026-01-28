@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\RegistroActividadMaterial;
 use App\Models\RegistroDeAtividades;
 use App\Models\User;
 
@@ -27,10 +28,12 @@ class MaterialesEInsumos extends Model
 
     public function registros()
     {
-        return $this->belongsToMany(RegistroDeAtividades::class, 'registro_actividad_material', 'material_id', 'registro_id')
-            ->withPivot(['cantidad_usada', 'unidad'])
+        return $this->belongsToMany(RegistroDeAtividades::class, 'registro_actividad_material')
+            ->using(RegistroActividadMaterial::class)
+            ->withPivot(['cantidad', 'unidad'])
             ->withTimestamps();
     }
+
 
     public function responsable()
     {
