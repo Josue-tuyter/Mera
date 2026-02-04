@@ -59,6 +59,7 @@ class UserForm
                     ])
                     ->dehydrateStateUsing(fn ($state) => bcrypt($state))
                     ->visibleOn('create')
+                    ->visibleOn('edit')
             ]);
     }
 }

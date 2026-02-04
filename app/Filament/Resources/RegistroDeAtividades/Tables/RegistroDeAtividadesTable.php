@@ -7,10 +7,10 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\DateColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use App\Models\RegistroDeAtividades;
 
 class RegistroDeAtividadesTable
 {
@@ -20,6 +20,7 @@ class RegistroDeAtividadesTable
             ->columns([
                 TextColumn::make('fecha')
                     ->label('Fecha')
+                    ->date()
                     ->sortable(),
 
                 TextColumn::make('hora')
@@ -34,29 +35,50 @@ class RegistroDeAtividadesTable
                 TextColumn::make('encargado.name')
                     ->label('Encargado')
                     ->sortable()
-                    ->searchable()->wrap(),
+                    ->searchable()
+                    ->wrap(),
+
+                // --- NUEVA COLUMNA DE MATERIALES Y CANTIDADES ---
+                TextColumn::make('materiales') // Usamos la relación belongsToMany
+                    ->label('Productos / Cantidad')
+                    ->getStateUsing(function (RegistroDeAtividades $record) {
+                        // Obtenemos los materiales cargando sus datos pivot
+                        return $record->materiales->map(function ($material) {
+                            // Accedemos a 'cantidad' y 'unidad_aplicada' desde el objeto pivot
+                            $cantidad = $material->pivot->cantidad ?? '0';
+                            $unidad = $material->pivot->unidad_aplicada ?? '';
+                            
+                            return "{$material->nombre}: {$cantidad} {$unidad}";
+                        })->toArray();
+                    })
+                    ->listWithLineBreaks()
+                    ->bulleted()
+                    ->searchable(query: function ($query, string $search) {
+                        return $query->whereHas('materiales', function ($q) use ($search) {
+                            $q->where('nombre', 'like', "%{$search}%");
+                        });
+                    }),
+    //----------------------------------------
 
                 TextColumn::make('organizacion.nombre')
                     ->label('Organización')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('estado.nombre')
                     ->label('Estado')
-                    ->sortable()
-                    ->searchable(),
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Pendiente' => 'warning',
+                        'Completado' => 'success',
+                        'En Proceso' => 'info',
+                        default => 'gray',
+                    })
+                    ->sortable(),
 
                 TextColumn::make('parcela')
                     ->label('Parcela')
-                    ->toggleable(),
-
-                TextColumn::make('producto_aplicado')
-                    ->label('Producto')
-                    ->toggleable(),
-
-                TextColumn::make('cantidad_producto')
-                    ->label('Cantidad')
-                    ->numeric()
                     ->toggleable(),
 
                 TextColumn::make('duracion_minutos')
@@ -65,7 +87,7 @@ class RegistroDeAtividadesTable
 
                 TextColumn::make('descripcion')
                     ->label('Descripción')
-                    ->limit(50)
+                    ->limit(30)
                     ->wrap(),
             ])
             ->filters([
@@ -104,7 +126,7 @@ class RegistroDeAtividadesTable
             ->recordActions([
                 EditAction::make(),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

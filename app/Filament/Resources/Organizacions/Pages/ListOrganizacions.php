@@ -16,4 +16,9 @@ class ListOrganizacions extends ListRecords
             CreateAction::make(),
         ];
     }
+
+            protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

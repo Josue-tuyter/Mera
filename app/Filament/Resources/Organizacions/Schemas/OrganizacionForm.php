@@ -8,7 +8,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Toggle;
-use App\Models\User;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
 
 class OrganizacionForm
 {
@@ -16,38 +17,84 @@ class OrganizacionForm
     {
         return $schema
             ->components([
-                TextInput::make('nombre')
-                    ->label('Nombre')
-                    ->required()
-                    ->maxLength(255),
+                // SECCIÓN 1: Detalles Generales
+                Section::make('Información General')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            TextInput::make('nombre')
+                                ->label('Nombre de la Tarea/Proyecto')
+                                ->required()
+                                ->maxLength(255)
+                                ->columnSpan(1),
 
-                Textarea::make('descripcion')
-                    ->label('Descripción')
-                    ->rows(4)
-                    ->nullable(),
+                            Select::make('responsable_id')
+                                ->label('Asignado a')
+                                ->relationship('responsable', 'name')
+                                ->searchable()
+                                ->preload()
+                                ->required(),
+                        ]),
+                        
+                        Textarea::make('descripcion')
+                            ->label('Descripción Detallada')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                            
+                        Textarea::make('objetivo')
+                            ->label('Objetivo Final')
+                            ->placeholder('¿Qué se espera lograr con esto?')
+                            ->rows(2)
+                            ->columnSpanFull(),
+                    ]),
 
-                Select::make('responsable_id')
-                    ->label('Responsable')
-                    ->relationship('responsable', 'name')
-                    ->searchable()
-                    ->nullable(),
+                // SECCIÓN 2: Planificación y Estado (El cerebro del sistema)
+                Section::make('Planificación y Seguimiento')
+                    ->description('Gestiona los plazos y la urgencia.')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            Select::make('status')
+                                ->label('Estado Actual')
+                                ->options([
+                                    'pendiente' => 'Pendiente ⏳',
+                                    'en_progreso' => 'En Progreso 🚧',
+                                    'revision' => 'En Revisión 👀',
+                                    'completado' => 'Completado ✅',
+                                    'cancelado' => 'Cancelado 🚫',
+                                ])
+                                ->default('pendiente')
+                                ->required()
+                                ->native(false),
 
-                DatePicker::make('fecha_inicio')
-                    ->label('Fecha de inicio')
-                    ->nullable(),
+                            Select::make('prioridad')
+                                ->label('Nivel de Prioridad')
+                                ->options([
+                                    'baja' => 'Baja 🟢',
+                                    'media' => 'Media 🟡',
+                                    'alta' => 'Alta 🔴',
+                                    'urgente' => 'Urgente 🔥',
+                                ])
+                                ->default('media')
+                                ->required()
+                                ->native(false),
+                        ]),
 
-                DatePicker::make('fecha_fin')
-                    ->label('Fecha fin')
-                    ->nullable(),
+                        Grid::make(2)->schema([
+                            DatePicker::make('fecha_inicio')
+                                ->label('Fecha Inicio')
+                                ->native(false),
 
-                Textarea::make('objetivo')
-                    ->label('Objetivo')
-                    ->rows(3)
-                    ->nullable(),
-
-                Toggle::make('activo')
-                    ->label('Activo')
-                    ->default(true),
+                            DatePicker::make('fecha_fin')
+                                ->label('Fecha Vencimiento')
+                                ->native(false)
+                                ->suffixIcon('heroicon-m-calendar'),
+                        ]),
+                        
+                        Toggle::make('activo')
+                            ->label('Registro Visible / Activo')
+                            ->default(true)
+                            ->inline(false),
+                    ])
+                    ->collapsible(),
             ]);
     }
 }

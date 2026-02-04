@@ -14,6 +14,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Filament\Forms\Form;
+use Filament\Forms; // Esto es vital para que Forms\Form funcione
+// Asegúrate de que estas líneas estén presentes si el error persiste
+
 
 class EstadoResource extends Resource
 {
@@ -27,7 +31,10 @@ class EstadoResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return EstadoForm::configure($schema);
+        return $schema
+            ->components(
+                \App\Filament\Resources\Estados\Schemas\EstadoForm::configure($schema)
+            );
     }
 
     public static function table(Table $table): Table
@@ -47,7 +54,7 @@ class EstadoResource extends Resource
         return [
             'index' => ListEstados::route('/'),
             'create' => CreateEstado::route('/create'),
-            'edit' => EditEstado::route('/{record}/edit'),
+            //'edit' => EditEstado::route('/{record}/edit'),
         ];
     }
 }

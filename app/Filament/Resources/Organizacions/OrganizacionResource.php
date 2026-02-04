@@ -47,7 +47,7 @@ class OrganizacionResource extends Resource
         return [
             'index' => ListOrganizacions::route('/'),
             'create' => CreateOrganizacion::route('/create'),
-            'edit' => EditOrganizacion::route('/{record}/edit'),
+            //'edit' => EditOrganizacion::route('/{record}/edit'),
         ];
     }
 }

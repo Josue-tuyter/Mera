@@ -65,15 +65,22 @@ class RegistroDeAtividades extends Model
         )->withTimestamps();
     }
 
+    public function materiales() {
+        return $this->belongsToMany(MaterialesEInsumos::class, 
+        'registro_actividad_material', 
+        'registro_de_atividades_id', 
+        'materiales_e_insumos_id')
 
-    public function materiales()
-    {
-        return $this->belongsToMany(
-            MaterialesEInsumos::class,
-            'registro_actividad_material',
-            'registro_de_atividades_id',
-            'materiales_e_insumos_id'
-        )->withPivot(['cantidad', 'unidad'])->withTimestamps();
+        ->withPivot(['cantidad', 'unidad_aplicada']) // <--- ESTO ES VITAL
+        ->withTimestamps();
     }
+
+    public function materiales_pivote()
+    {
+        return $this->hasMany(RegistroActividadMaterial::class, 'registro_de_atividades_id');
+    }
+
+
+    
 
 }

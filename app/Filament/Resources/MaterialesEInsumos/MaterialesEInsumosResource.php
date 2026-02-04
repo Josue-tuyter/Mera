@@ -46,7 +46,7 @@ class MaterialesEInsumosResource extends Resource
         return [
             'index' => ListMaterialesEInsumos::route('/'),
             'create' => CreateMaterialesEInsumos::route('/create'),
-            'edit' => EditMaterialesEInsumos::route('/{record}/edit'),
+            //'edit' => EditMaterialesEInsumos::route('/{record}/edit'),
         ];
     }
 }

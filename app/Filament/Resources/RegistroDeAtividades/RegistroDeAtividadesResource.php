@@ -55,7 +55,7 @@ class RegistroDeAtividadesResource extends Resource
         return [
             'index' => ListRegistroDeAtividades::route('/'),
             'create' => CreateRegistroDeAtividades::route('/create'),
-            'edit' => EditRegistroDeAtividades::route('/{record}/edit'),
+            //'edit' => EditRegistroDeAtividades::route('/{record}/edit'),
         ];
     }
 }

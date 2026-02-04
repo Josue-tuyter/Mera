@@ -12,6 +12,8 @@ use Filament\Forms\Components\Repeater;
 use App\Models\MaterialesEInsumos;
 
 
+
+
 use Filament\Forms\Components\MultiSelect;
 
 class RegistroDeAtividadesForm
@@ -77,40 +79,49 @@ class RegistroDeAtividadesForm
                     ->nullable(),
 
                 /** 🔹 MATERIALES E INSUMOS (PIVOT) */
-        Repeater::make('materiales')
-            ->label('Materiales e insumos usados')
-            ->relationship('materiales')
-            ->schema([
-                Select::make('materiales_e_insumos_id')
-                    ->label('Material / Insumo')
-                    ->options(
-                        MaterialesEInsumos::pluck('nombre', 'id')
-                    )
-                    ->searchable()
-                    ->required()
-                    ->reactive(),
 
-                TextInput::make('cantidad')
-                    ->label('Cantidad usada')
-                    ->numeric()
-                    ->minValue(0.01)
-                    ->required(),
+Repeater::make('materiales_pivote') // <--- Usamos la nueva relación hasMany
+    ->label('Materiales e insumos usados')
+    ->relationship('materiales_pivote')
+    ->schema([
+        Select::make('materiales_e_insumos_id')
+            ->label('Material / Insumo')
+            ->options(MaterialesEInsumos::pluck('nombre', 'id'))
+            ->searchable()
+            ->required()
+            ->reactive()
+            ->afterStateUpdated(function ($set, $state) {
+                $material = MaterialesEInsumos::find($state);
+                if ($material) {
+                    $set('unidad_aplicada', $material->unidad);
+                }
+            }),
 
-                TextInput::make('unidad')
-                    ->label('Unidad')
-                    ->disabled()
-                    ->dehydrated()
-                    ->afterStateUpdated(function ($set, $get) {
-                        $material = MaterialesEInsumos::find(
-                            $get('materiales_e_insumos_id')
-                        );
+        TextInput::make('cantidad')
+            ->label('Cantidad usada')
+            ->numeric()
+            ->required()
+            ->rules([
+                fn ($get) => function (string $attribute, $value, $fail) use ($get) {
+                    $materialId = $get('materiales_e_insumos_id');
+                    if (!$materialId) return;
 
-                        if ($material) {
-                            $set('unidad', $material->unidad);
-                        }
-                    }),
-            ])
-            ->columnSpan('full'),
+                    $material = \App\Models\MaterialesEInsumos::find($materialId);
+                    if ($material && $value > $material->stock) {
+                        $fail("No hay suficiente stock. Disponible: {$material->stock} {$material->unidad}.");
+                    }
+                },
+            ]),
+
+        TextInput::make('unidad_aplicada')
+            ->label('Unidad')
+            ->disabled()
+            ->dehydrated()
+            ->required(),
+    ])
+    ->columnSpan('full')
+    ,
+
 
 
                 Textarea::make('descripcion')

@@ -6,10 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use App\Models\Estado;
-use App\Models\RegistroDeAtividades;
-use App\Models\User;
-
 class Organizacion extends Model
 {
     use HasFactory, SoftDeletes;
@@ -22,7 +18,15 @@ class Organizacion extends Model
         'fecha_fin',
         'objetivo',
         'activo',
+        'prioridad', // Nuevo
+        'status',    // Nuevo
     ];
+
+    // Relaciones
+    public function responsable()
+    {
+        return $this->belongsTo(User::class, 'responsable_id');
+    }
 
     public function estados()
     {
@@ -32,10 +36,5 @@ class Organizacion extends Model
     public function registros()
     {
         return $this->hasMany(RegistroDeAtividades::class, 'organizacion_id');
-    }
-
-    public function responsable()
-    {
-        return $this->belongsTo(User::class, 'responsable_id');
     }
 }

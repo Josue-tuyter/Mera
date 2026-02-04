@@ -5,6 +5,10 @@ use App\Pdf\RegistroAtividadesPdf;
 use App\Pdf\EquiposYHerramientasPdf;
 use App\Pdf\MaterialesEInsumosPdf;
 use App\Pdf\UsuariosPdf;
+use Illuminate\Support\Facades\Artisan;
+
+
+
     Route::get('/', function () {
         return view('welcome');
     });
@@ -40,3 +44,10 @@ use App\Pdf\UsuariosPdf;
             return (new UsuariosPdf())
                 ->download('reporte_usuarios.pdf');
         })->name('pdf.usuarios');
+
+// Ruta para forzar la ejecución del comando de mantenimiento manualmente
+        Route::get('/forzar-mantenimiento', function () {
+            // Esto ejecuta manualmente lo que el Cron Job haría automáticamente
+            Artisan::call('schedule:run');
+            return "✅ Se ha ejecutado el comando de mantenimiento. Revisa tu correo y el log.";
+        });        

@@ -2,16 +2,20 @@
 
 namespace App\Filament\Resources\Organizacions\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\DateColumn;
-use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Carbon\Carbon;
+use Filament\Actions\BulkActionGroup as ActionsBulkActionGroup;
+use Filament\Actions\EditAction as ActionsEditAction;
+use Filament\Actions\DeleteAction as ActionsDeleteBulkAction;
+
 
 class OrganizacionsTable
 {
@@ -19,39 +23,108 @@ class OrganizacionsTable
     {
         return $table
             ->columns([
-                TextColumn::make('nombre')->label('Nombre')->searchable()->sortable(),
-                TextColumn::make('descripcion')->label('Descripción')->limit(60)->toggleable(),
-                TextColumn::make('responsable.name')->label('Responsable')->searchable()->toggleable(),
-                TextColumn::make('fecha_inicio')->label('Inicio')->sortable()->toggleable(),
-                TextColumn::make('fecha_fin')->label('Fin')->sortable()->toggleable(),
-                TextColumn::make('objetivo')->label('Objetivo')->limit(80)->toggleable(),
-                BooleanColumn::make('activo')->label('Activo')->sortable(),
-            ])
-            ->filters([
-                SelectFilter::make('responsable_id')->label('Responsable')->relationship('responsable','name'),
+                // Columna de Prioridad con Icono y Color
+                TextColumn::make('prioridad')
+                    ->label('Prioridad')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'baja' => 'gray',
+                        'media' => 'info',
+                        'alta' => 'warning',
+                        'urgente' => 'danger',
+                        default => 'gray',
+                    })
+                    ->icon(fn (string $state): string => match ($state) {
+                        'urgente' => 'heroicon-o-fire',
+                        'alta' => 'heroicon-o-exclamation-triangle',
+                        default => 'heroicon-o-minus',
+                    })
+                    ->sortable(),
 
-                Filter::make('fecha_periodo')
-                    ->form([
-                        DatePicker::make('fecha_from')->label('Desde'),
-                        DatePicker::make('fecha_to')->label('Hasta'),
-                    ])
-                    ->query(function ($query, $data) {
-                        if ($data['fecha_from'] ?? false) {
-                            $query->where('fecha_inicio', '>=', $data['fecha_from']);
+                TextColumn::make('nombre')
+                    ->label('Actividad')
+                    ->searchable()
+                    ->weight('bold') // Negrita para destacar
+                    ->description(fn ($record) => \Illuminate\Support\Str::limit($record->descripcion, 40)),
+
+                // Badge de Estado
+                TextColumn::make('status')
+                    ->label('Estado')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'pendiente' => 'gray',
+                        'en_progreso' => 'warning',
+                        'revision' => 'info',
+                        'completado' => 'success',
+                        'cancelado' => 'danger',
+                        default => 'gray',
+                    })
+                    ->sortable(),
+
+                TextColumn::make('responsable.name')
+                    ->label('Responsable')
+                    ->icon('heroicon-o-user')
+                    ->searchable()
+                    ->toggleable(),
+
+                // Fecha Fin con lógica de alerta
+                TextColumn::make('fecha_fin')
+                    ->label('Vencimiento')
+                    ->date('d M Y')
+                    ->sortable()
+                    ->color(function ($record) {
+                        // Si ya pasó la fecha y NO está completado, poner en rojo
+                        if ($record->fecha_fin < now() && $record->status !== 'completado') {
+                            return 'danger';
                         }
-                        if ($data['fecha_to'] ?? false) {
-                            $query->where('fecha_fin', '<=', $data['fecha_to']);
+                        return null;
+                    })
+                    ->icon(function ($record) {
+                        if ($record->fecha_fin < now() && $record->status !== 'completado') {
+                            return 'heroicon-o-exclamation-circle';
                         }
+                        return 'heroicon-o-calendar';
                     }),
 
-                SelectFilter::make('activo')->label('Activo')->options([1 => 'Activo', 0 => 'Inactivo']),
+                IconColumn::make('activo')
+                    ->label('Activo')
+                    ->boolean()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true), // Oculto por defecto para limpiar la vista
             ])
-            ->recordActions([
-                EditAction::make(),
+            ->defaultSort('created_at', 'desc')
+            ->filters([
+                SelectFilter::make('status')
+                    ->label('Filtrar por Estado')
+                    ->options([
+                        'pendiente' => 'Pendiente',
+                        'en_progreso' => 'En Progreso',
+                        'completado' => 'Completado',
+                    ]),
+
+                SelectFilter::make('prioridad')
+                    ->label('Prioridad')
+                    ->options([
+                        'alta' => 'Alta / Urgente',
+                        'media' => 'Media',
+                        'baja' => 'Baja',
+                    ]),
+
+                SelectFilter::make('responsable_id')
+                    ->label('Responsable')
+                    ->relationship('responsable', 'name'),
+
+                Filter::make('vencidas')
+                    ->label('Solo Tareas Vencidas')
+                    ->query(fn ($query) => $query->where('fecha_fin', '<', now())->where('status', '!=', 'completado'))
+                    ->toggle(),
+            ])
+            ->actions([ 
+                ActionsEditAction::make(),
             ])
             ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                ActionsBulkActionGroup::make([
+                  ActionsDeleteBulkAction::make()
                 ]),
             ]);
     }

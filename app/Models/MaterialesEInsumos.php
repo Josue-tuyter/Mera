@@ -30,7 +30,7 @@ class MaterialesEInsumos extends Model
     {
         return $this->belongsToMany(RegistroDeAtividades::class, 'registro_actividad_material')
             ->using(RegistroActividadMaterial::class)
-            ->withPivot(['cantidad', 'unidad'])
+            ->withPivot(['cantidad', 'unidad_aplicada'])
             ->withTimestamps();
     }
 
