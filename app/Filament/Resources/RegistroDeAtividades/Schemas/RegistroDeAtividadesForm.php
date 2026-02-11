@@ -24,6 +24,16 @@ class RegistroDeAtividadesForm
             ->components([
                 DatePicker::make('fecha')
                     ->label('Fecha')
+                    ->minDate(today())
+                    ->rules([
+                        'nullable',
+                        'date',
+                        'after_or_equal:today',
+                    ])
+                    ->validationMessages([
+                        'after_or_equal' => 'No se permiten fechas pasadas',
+                    ])
+                    ->native(false)
                     ->required(),
 
                 TimePicker::make('hora')

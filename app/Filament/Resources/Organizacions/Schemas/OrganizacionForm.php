@@ -81,11 +81,29 @@ class OrganizacionForm
                         Grid::make(2)->schema([
                             DatePicker::make('fecha_inicio')
                                 ->label('Fecha Inicio')
+                                 ->minDate(today())
+                                ->rules([
+                                    'nullable',
+                                    'date',
+                                    'after_or_equal:today',
+                                ])
+                                ->validationMessages([
+                                    'after_or_equal' => 'No se permiten fechas pasadas',
+                                ])
                                 ->native(false),
 
                             DatePicker::make('fecha_fin')
                                 ->label('Fecha Vencimiento')
                                 ->native(false)
+                                                    ->minDate(today())
+                                ->rules([
+                                    'nullable',
+                                    'date',
+                                    'after_or_equal:fecha_inicio',
+                                ])
+                                ->validationMessages([
+                                    'after_or_equal' => 'No se permiten fechas pasadas',
+                                ])                                
                                 ->suffixIcon('heroicon-m-calendar'),
                         ]),
                         

@@ -39,4 +39,12 @@ class MaterialesEInsumos extends Model
     {
         return $this->belongsTo(User::class, 'responsable_id');
     }
+
+
+    public function getNecesitaReabastecimientoAttribute(): bool
+    {
+        return $this->cantidad <= $this->stock_minimo;
+    }
+
+
 }

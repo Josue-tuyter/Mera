@@ -58,8 +58,8 @@ class UserForm
                         'regex' => 'Debe contener al menos una mayúscula, una minúscula y un número',
                     ])
                     ->dehydrateStateUsing(fn ($state) => bcrypt($state))
-                    ->visibleOn('create')
-                    ->visibleOn('edit')
+                    // ->visibleOn('create')
+                    // ->visibleOn('edit')
             ]);
     }
 }

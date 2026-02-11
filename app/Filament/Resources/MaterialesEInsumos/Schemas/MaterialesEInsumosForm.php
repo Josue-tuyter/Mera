@@ -153,6 +153,7 @@ class MaterialesEInsumosForm
                     ->label('Fecha de vencimiento')
                     ->nullable()
                     ->reactive()
+                    ->native(false)
                     ->minDate(today())
                     ->rules([
                         'nullable',

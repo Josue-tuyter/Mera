@@ -72,10 +72,14 @@ class Reportes extends Page implements HasForms
 
                 DatePicker::make('fecha_inicio')
                     ->label('Desde')
-                    ->visible(fn ($get) => $get('recurso') === 'actividades'),
+                    ->visible(fn ($get) => $get('recurso') === 'actividades')
+                    ->native(false)
+                    ,
 
                 DatePicker::make('fecha_fin')
                     ->label('Hasta')
+                    ->native(false)
+                    ->suffixIcon('heroicon-m-calendar')
                     ->visible(fn ($get) => $get('recurso') === 'actividades'),
             ])
             ->statePath('data');     

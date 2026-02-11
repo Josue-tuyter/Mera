@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\RegistroActividadMaterial;
+use App\Models\User; // <--- Importamos el modelo User
 use App\Mail\StockBajoMailable;
 use Illuminate\Support\Facades\Mail;
 use Filament\Notifications\Notification;
@@ -14,8 +15,6 @@ class RegistroActividadMaterialObserver
         $material = $pivot->material;
         if ($material) {
             $material->decrement('stock', $pivot->cantidad);
-            
-            // ¡ESTA LÍNEA ES LA QUE FALTA!
             $this->verificarYNotificar($material);
         }
     }
@@ -28,8 +27,6 @@ class RegistroActividadMaterialObserver
             
             if ($material) {
                 $material->decrement('stock', $diferencia);
-                
-                // ¡ESTA LÍNEA TAMBIÉN ES NECESARIA AQUÍ!
                 $this->verificarYNotificar($material);
             }
         }
@@ -40,22 +37,28 @@ class RegistroActividadMaterialObserver
         $material->refresh();
 
         if ($material->stock <= $material->stock_minimo) {
+            // Notificación en la interfaz de Filament
             Notification::make()
                 ->danger()
                 ->title('Stock Crítico Detectado')
                 ->body("El insumo {$material->nombre} ha bajado a {$material->stock}.")
-                // 15000 milisegundos = 15 segundos. Tiempo suficiente para leer.
                 ->duration(15000) 
                 ->send();
 
-            // El resto del código del Mail...
-            $destinatarios = ['josuerogelym@gmail.com'];
-            if (auth()->check()) { $destinatarios[] = auth()->user()->email; }
+            // --- LÓGICA PARA ENVIAR A TODOS LOS USUARIOS ---
+            
+            // Obtenemos solo los emails de todos los usuarios activos
+            $destinatarios = User::pluck('email')->toArray();
 
-            try {
-                Mail::to($destinatarios)->send(new StockBajoMailable($material));
-            } catch (\Exception $e) {
-                \Log::error("Error de correo: " . $e->getMessage());
+            // Si por alguna razón no hay usuarios, evitamos el error
+            if (count($destinatarios) > 0) {
+                try {
+                    // Usamos bcc() si no quieres que los usuarios vean los correos de los demás,
+                    // o to() si no hay problema con ello.
+                    Mail::to($destinatarios)->send(new StockBajoMailable($material));
+                } catch (\Exception $e) {
+                    \Log::error("Error de correo masivo: " . $e->getMessage());
+                }
             }
         }
     }

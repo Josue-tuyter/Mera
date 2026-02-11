@@ -9,12 +9,12 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\BulkActionGroup;
 use Carbon\Carbon;
-use Filament\Actions\BulkActionGroup as ActionsBulkActionGroup;
 use Filament\Actions\EditAction as ActionsEditAction;
-use Filament\Actions\DeleteAction as ActionsDeleteBulkAction;
+use Filament\Actions\DeleteBulkAction;
+use Illuminate\Database\Eloquent\Collection;
+
+
 
 
 class OrganizacionsTable
@@ -122,10 +122,8 @@ class OrganizacionsTable
             ->actions([ 
                 ActionsEditAction::make(),
             ])
-            ->toolbarActions([
-                ActionsBulkActionGroup::make([
-                  ActionsDeleteBulkAction::make()
-                ]),
+            ->headerActions([
+                DeleteBulkAction::make(),
             ]);
     }
 }

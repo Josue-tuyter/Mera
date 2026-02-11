@@ -48,12 +48,23 @@ class EquiposYHerramientaForm
 
                 DatePicker::make('fecha_ultimo_mantenimiento')
                     ->label('Último mantenimiento')
-                    ->nullable(),
+                    ->nullable()
+                    ->native(false)
+                    ->minDate(now()->subDay())
+                    ->rules([
+                        'nullable',
+                        'date',
+                        'after_or_equal:yesterday',
+                    ])
+                    ->validationMessages([
+                        'after_or_equal' => 'No se permiten fechas anteriores a ayer',
+                    ]),
 
                 DatePicker::make('proximo_mantenimiento')
                     ->label('Próximo mantenimiento')
                     ->nullable()
                     ->reactive()
+                    ->native(false)
                     ->minDate(today())
                     ->rules([
                         'nullable',
@@ -68,7 +79,8 @@ class EquiposYHerramientaForm
                     ->numeric()
                     ->minValue(1)
                     ->maxValue(9999)
-                    ->nullable(),
+                    ->nullable()
+                    ->visible(fn ($get) => $get('proximo_mantenimiento') !== null),
 
                 TextInput::make('ubicacion')
                     ->label('Ubicación')
@@ -86,7 +98,10 @@ class EquiposYHerramientaForm
                     ->minValue(0)
                     ->maxValue(999999.99)
                     ->step(0.01)
+                    ->suffix('USD')
                     ->nullable(),
             ]);
     }
+
+    
 }

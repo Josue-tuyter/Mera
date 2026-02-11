@@ -21,6 +21,7 @@ class RegistroDeAtividadesTable
                 TextColumn::make('fecha')
                     ->label('Fecha')
                     ->date()
+                    
                     ->sortable(),
 
                 TextColumn::make('hora')
