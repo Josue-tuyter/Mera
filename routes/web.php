@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 
 
 
+
     Route::get('/', function () {
         return view('welcome');
     });
@@ -50,4 +51,6 @@ use Illuminate\Support\Facades\Artisan;
             // Esto ejecuta manualmente lo que el Cron Job haría automáticamente
             Artisan::call('schedule:run');
             return "✅ Se ha ejecutado el comando de mantenimiento. Revisa tu correo y el log.";
-        });        
+        });
+        
+        

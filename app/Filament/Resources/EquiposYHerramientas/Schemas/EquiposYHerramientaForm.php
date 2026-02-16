@@ -3,11 +3,15 @@
 namespace App\Filament\Resources\EquiposYHerramientas\Schemas;
 
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\FileUpload;
 
 class EquiposYHerramientaForm
 {
@@ -15,93 +19,132 @@ class EquiposYHerramientaForm
     {
         return $schema
             ->components([
-                TextInput::make('nombre')
-                    ->label('Nombre')
-                    ->required()
-                    ->maxLength(100)
-                    ->regex('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/')
-                    ->validationMessages([
-                        'regex' => 'Solo se permiten letras, espacios y guiones',
+                
+                // SECCIÓN 1: IDENTIFICACIÓN - FONDO MARRÓN CACAO
+                Section::make('Identificación del Equipo')
+                    ->description('Sube una foto real del equipo y asigna su identificador.')
+                    ->icon('heroicon-o-identification')
+                    ->extraAttributes([
+                        'class' => 'bg-[#4E2C0F]/5 border-t-4 border-[#4E2C0F] rounded-xl shadow-sm',
                     ])
-                    ->live(),
+                    ->schema([
+                        FileUpload::make('imagen_url')
+                            ->label('Fotografía')
+                            ->image()
+                            ->directory('equipos')
+                            ->imageEditor()
+                            ->columnSpan(1),
 
-                Textarea::make('descripcion')
-                    ->label('Descripción')
-                    ->maxLength(500)
-                    ->rows(3)
-                    ->nullable()
-                    ->helperText('Máximo 500 caracteres'),
+                        Group::make([
+                            TextInput::make('nombre')
+                                ->label('Nombre')
+                                ->required()
+                                ->maxLength(100)
+                                ->regex('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/')
+                                ->validationMessages([
+                                    'regex' => 'Solo se permiten letras, espacios y guiones',
+                                ])
+                                ->live(),
 
-                TextInput::make('serial')
-                    ->label('Serial')
-                    ->nullable()
-                    ->maxLength(50)
-                    ->regex('/^[a-zA-Z0-9\-\/]+$/')
-                    ->validationMessages([
-                        'regex' => 'Solo se permiten letras, números, guiones y barras',
+                            TextInput::make('serial')
+                                ->label('Serial')
+                                ->nullable()
+                                ->maxLength(50)
+                                ->regex('/^[a-zA-Z0-9\-\/]+$/')
+                                ->validationMessages([
+                                    'regex' => 'Solo se permiten letras, números, guiones y barras',
+                                ])
+                                ->live(),
+                        ])->columnSpan(1),
                     ])
-                    ->live(),
+                    ->columns(2),
 
-                Toggle::make('disponible')
-                    ->label('Disponible')
-                    ->default(true),
-
-                DatePicker::make('fecha_ultimo_mantenimiento')
-                    ->label('Último mantenimiento')
-                    ->nullable()
-                    ->native(false)
-                    ->minDate(now()->subDay())
-                    ->rules([
-                        'nullable',
-                        'date',
-                        'after_or_equal:yesterday',
+                // SECCIÓN 2: UBICACIÓN - FONDO VERDE FOLLAJE
+                Section::make('Ubicación y Gestión')
+                    ->icon('heroicon-o-map-pin')
+                    ->extraAttributes([
+                        'class' => 'bg-[#606C38]/5 border-t-4 border-[#606C38] rounded-xl shadow-sm',
                     ])
-                    ->validationMessages([
-                        'after_or_equal' => 'No se permiten fechas anteriores a ayer',
+                    ->schema([
+                        TextInput::make('ubicacion')
+                            ->label('Ubicación')
+                            ->maxLength(100)
+                            ->placeholder('Ej: Bodega Principal')
+                            ->nullable(),
+
+                        Select::make('responsable_id')
+                            ->label('Responsable')
+                            ->relationship('responsable', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->nullable(),
+
+                        Textarea::make('descripcion')
+                            ->label('Descripción Detallada')
+                            ->maxLength(500)
+                            ->rows(3)
+                            ->nullable()
+                            ->helperText('Máximo 500 caracteres')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2),
+
+                // SECCIÓN 3: MANTENIMIENTO - FONDO AMARILLO MAZORCA
+                Section::make('Control de Mantenimiento')
+                    ->icon('heroicon-o-wrench-screwdriver')
+                    ->extraAttributes([
+                        'class' => 'bg-[#D4A373]/5 border-t-4 border-[#D4A373] rounded-xl shadow-sm',
+                    ])
+                    ->schema([
+                        DatePicker::make('fecha_ultimo_mantenimiento')
+                            ->label('Último mantenimiento')
+                            ->nullable()
+                            ->native(false),
+
+                        DatePicker::make('proximo_mantenimiento')
+                            ->label('Próximo mantenimiento')
+                            ->nullable()
+                            ->reactive()
+                            ->native(false)
+                            ->minDate(today())
+                            ->rules([
+                                'nullable',
+                                'date',
+                                'after_or_equal:today',
+                            ])
+                            ->validationMessages([
+                                'after_or_equal' => 'No se permiten fechas pasadas',
+                            ]),
+
+                        TextInput::make('costo_mantenimiento_estimado')
+                            ->label('Costo mantenimiento estimado')
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(999999.99)
+                            ->step(0.01)
+                            ->suffix('USD')
+                            ->prefix('$')
+                            ->nullable(),
+
+                        TextInput::make('intervalo_mantenimiento_dias')
+                            ->label('Intervalo mantenimiento (días)')
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(9999)
+                            ->nullable()
+                            ->visible(fn ($get) => $get('proximo_mantenimiento') !== null),
+                    ])
+                    ->columns(2),
+
+                // SECCIÓN 4: ESTADO
+                Section::make()
+                    ->schema([
+                        Toggle::make('disponible')
+                            ->label('¿El equipo está operativo actualmente?')
+                            ->onColor('success')
+                            ->offColor('danger')
+                            ->default(true),
                     ]),
-
-                DatePicker::make('proximo_mantenimiento')
-                    ->label('Próximo mantenimiento')
-                    ->nullable()
-                    ->reactive()
-                    ->native(false)
-                    ->minDate(today())
-                    ->rules([
-                        'nullable',
-                        'date',
-                        'after_or_equal:today',
-                    ])
-                    ->validationMessages([
-                        'after_or_equal' => 'No se permiten fechas pasadas',
-                    ]),
-                TextInput::make('intervalo_mantenimiento_dias')
-                    ->label('Intervalo mantenimiento (días)')
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(9999)
-                    ->nullable()
-                    ->visible(fn ($get) => $get('proximo_mantenimiento') !== null),
-
-                TextInput::make('ubicacion')
-                    ->label('Ubicación')
-                    ->maxLength(100)
-                    ->nullable(),
-
-                Select::make('responsable_id')
-                    ->label('Responsable')
-                    ->relationship('responsable', 'name')
-                    ->nullable(),
-
-                TextInput::make('costo_mantenimiento_estimado')
-                    ->label('Costo mantenimiento estimado')
-                    ->numeric()
-                    ->minValue(0)
-                    ->maxValue(999999.99)
-                    ->step(0.01)
-                    ->suffix('USD')
-                    ->nullable(),
             ]);
     }
-
-    
 }

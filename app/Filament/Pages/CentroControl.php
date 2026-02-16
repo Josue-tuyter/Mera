@@ -13,7 +13,7 @@ class CentroControl extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-presentation-chart-line';
     protected static ?string $navigationLabel = 'Control de stock';
-    //protected static string|UnitEnum|null $navigationGroup = 'Stock e insumos';
+    protected static string|UnitEnum|null $navigationGroup = 'Stock e insumos';
     protected static ?string $title = 'Stock e insumos';
     protected string $view = 'filament.pages.centro-control';
 

@@ -1,0 +1,228 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+@config 'tailwind.config.js';
+
+/* Fondo general del panel (después del login) */
+.fi-body {
+    @apply bg-gradient-to-br from-[#f7fff7] via-[#f0fff4] to-[#e6f4ea]; /* tonos muy claros de tu welcome */
+}
+
+/* Fondo del login (pantalla de acceso admin) */
+.fi-login {
+    @apply bg-gradient-to-br from-[#f7fff7] via-[#f0fff4] to-[#e6f4ea];
+    /* Si tienes una imagen de plantación o mazorcas: */
+    /* background-image: url('/images/fondo-cacao-admin.jpg'); */
+    /* background-size: cover; */
+    /* background-position: center; */
+}
+
+/* Panel central del login más sutil (vidrio esmerilado) */
+.fi-login-main {
+    @apply bg-white/80 backdrop-blur-md border border-green-200/60 shadow-2xl rounded-2xl;
+}
+
+/* Navegación superior (top navigation que usas) */
+.fi-topbar {
+    @apply bg-white/90 backdrop-blur-sm border-b border-green-100 shadow-sm;
+}
+.fi-topbar-item-active {
+    @apply text-[#2f855a] font-semibold border-b-2 border-[#2f855a];
+}
+
+/* Tablas */
+.fi-table {
+    @apply border border-green-100 rounded-xl overflow-hidden;
+}
+.fi-table-row-odd {
+    @apply bg-[#f0fff4]/60; /* rayas claras como tu welcome */
+}
+.fi-table-row-hover:hover {
+    @apply bg-[#e6f4ea]/80;
+}
+.fi-table-th {
+    @apply bg-[#2f855a]/10 text-[#2f855a] font-semibold;
+}
+
+/* Cards / Widgets del dashboard */
+.fi-card {
+    @apply border border-green-100 shadow-md rounded-xl bg-white/90;
+}
+
+/* Botones primarios */
+.fi-btn-primary {
+    @apply bg-[#2f855a] hover:bg-[#276749] text-white;
+}
+
+/* Si quieres sidebar (aunque usas top nav, por si la activas después) */
+.fi-sidebar {
+    @apply bg-[#07321b]/95 text-white;
+}
+.fi-sidebar-item-active {
+    @apply bg-[#2f855a]/80;
+}
+
+/* ----------------------------------------------------------------------------------------------------------------------- */
+
+/* Fondo del login */
+.fi-login {
+    @apply bg-gradient-to-br from-amber-100 via-orange-50 to-yellow-50;
+}
+
+/* O con imagen de fondo (recomendado para tema cacao) */
+.fi-login {
+    background-image: url('/images/fondo-login-cacao.jpg');  /* sube la imagen a public/images */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Panel del formulario (blanco por defecto) */
+.fi-login-main {
+    @apply bg-white/90 backdrop-blur-sm shadow-2xl border border-amber-200;
+    border-radius: 1.5rem;
+}
+
+/* Logo en login */
+.fi-login-brand {
+    @apply h-24;  /* más grande si quieres */
+}
+
+/* ------------------------------------------------------------------------------------------------------------------------ */
+/* Dashboard específico */
+.fi-dashboard {
+    @apply relative;
+}
+
+/* Fondo del contenido principal */
+.fi-main {
+    @apply bg-gradient-to-br from-[#f7fff7] via-[#f0fff4] to-[#e6f4ea] min-h-screen;
+}
+
+/* Header widgets area */
+.fi-header-widgets {
+    @apply bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-[#2f855a]/20;
+}
+
+
+
+
+
+/* Fondo general del panel (después del login) */
+.fi-body {
+    @apply bg-gradient-to-br from-[#f7fff7] via-[#f0fff4] to-[#e8f5e9];
+}
+
+/* Contenedor principal de tablas */
+.fi-table-container {
+    @apply rounded-2xl overflow-hidden border border-[#8bd3a9]/30 shadow-md;
+}
+
+/* Tabla base */
+.fi-table {
+    @apply w-full border-collapse bg-white;
+}
+
+/* Encabezados (th) */
+.fi-table th {
+    @apply bg-[#2f855a]/10 text-[#07321b] font-semibold uppercase tracking-wider text-sm py-4 px-6 border-b border-[#8bd3a9]/40;
+    text-align: left;
+}
+
+/* Celdas normales */
+.fi-table td {
+    @apply py-4 px-6 text-[#4e6b55] border-b border-[#8bd3a9]/20;
+}
+
+/* Rayas alternas (filas impares) */
+.fi-table tbody tr:nth-child(odd) {
+    @apply bg-[#f0fff4]/60;
+}
+
+/* Hover en filas */
+.fi-table tbody tr:hover {
+    @apply bg-[#e6f4ea]/90 transition-colors duration-200;
+}
+
+/* Primera y última celda de fila (bordes redondeados suaves) */
+.fi-table tbody tr:first-child td:first-child {
+    @apply rounded-tl-lg;
+}
+.fi-table tbody tr:first-child td:last-child {
+    @apply rounded-tr-lg;
+}
+.fi-table tbody tr:last-child td:first-child {
+    @apply rounded-bl-lg;
+}
+.fi-table tbody tr:last-child td:last-child {
+    @apply rounded-br-lg;
+}
+
+/* Acciones (botones editar, ver, eliminar) */
+.fi-table-actions {
+    @apply flex items-center gap-3;
+}
+.fi-table-actions .fi-btn {
+    @apply text-[#2f855a] hover:text-[#276749] transition-colors;
+}
+.fi-table-actions .fi-btn-danger {
+    @apply text-[#8b2e2e] hover:text-red-800;
+}
+
+/* Paginación */
+.fi-pagination {
+    @apply border-t border-[#8bd3a9]/30 py-4 px-6 bg-white/80;
+}
+.fi-pagination-item {
+    @apply text-[#4e6b55] hover:bg-[#2f855a]/10 rounded-md;
+}
+.fi-pagination-item-active {
+    @apply bg-[#2f855a] text-white font-medium;
+}
+
+/* Filtros y búsqueda (si usas) */
+.fi-filters {
+    @apply bg-white/90 backdrop-blur-sm border border-[#8bd3a9]/20 rounded-xl shadow-sm;
+}
+.fi-search-input {
+    @apply border-[#8bd3a9]/40 focus:border-[#2f855a] focus:ring-[#2f855a]/30;
+}
+
+/* Texto vacío (no hay registros) */
+.fi-empty-state {
+    @apply text-[#4e6b55] py-12;
+}
+.fi-empty-state-heading {
+    @apply text-[#07321b] font-semibold;
+}
+
+/* --- Personalización Los Mera Cacao --- */
+
+/* Fondo del Login con tu foto de la plantación */
+.fi-login {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                      url('/images/imgs/img (5).jpeg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+/* Panel de login efecto cristal */
+.fi-login-main {
+    @apply bg-white/70 backdrop-blur-lg border-white/30 shadow-2xl !important;
+    border-radius: 2rem !important;
+}
+
+/* Fondo general del sistema (más orgánico) */
+.fi-body {
+    background-color: #FDFBF7 !important;
+    background-image: radial-gradient(#e5e7eb 0.5px, transparent 0.5px) !important;
+    background-size: 24px 24px !important;
+}
+
+/* Encabezados de tablas con color cacao */
+.fi-table-th {
+    @apply bg-[#4E2C0F]/5 text-[#4E2C0F] font-bold uppercase !important;
+}
+
+/* Botones con bordes más redondeados */
+.fi-btn {
+    @apply rounded-full px-6 !important;
+}

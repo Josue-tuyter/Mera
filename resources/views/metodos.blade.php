@@ -23,12 +23,12 @@
                 <div class="grid">
                     <div>
                         <h3>Siembra y establecimiento</h3>
-                        <img class="method-img" src="https://images.unsplash.com/photo-1506806732259-39c2d0268443?auto=format&fit=crop&w=1200&q=60" alt="Siembra">
+                        <img class="method-img" src="{{ asset('images/imgs/img (1).jpeg') }}" alt="Siembra">
                         <p style="color:#4e6b55">Preparación de suelo, selección de plantones y manejo de sombra.</p>
                     </div>
                     <div>
                         <h3>Poda y formación</h3>
-                        <img class="method-img" src="https://images.unsplash.com/photo-1472220625704-91e1462799b2?auto=format&fit=crop&w=1200&q=60" alt="Poda">
+                        <img class="method-img" src="{{ asset('images/imgs/img (2).jpeg') }}" alt="Poda">
                         <p style="color:#4e6b55">Poda estructural para mejorar ventilación y luminosidad.</p>
                     </div>
                 </div>

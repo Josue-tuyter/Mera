@@ -20,7 +20,7 @@
             <div class="hero" style="margin-top:12px">
                 <h1>Historia de la finca</h1>
                 <p style="color:#4e6b55">Una tradición familiar dedicada al cacao que se transmite de generación en generación. Nuestra historia combina prácticas agroecológicas con el fortalecimiento de la comunidad local.</p>
-                <img class="image" src="https://images.unsplash.com/photo-1524594154904-cc29446f8e1b?auto=format&fit=crop&w=1200&q=60" alt="Historia">
+                <img class="image" src="{{ asset('images/imgs/img (2).jpeg') }}" alt="Historia">
                 <h3 style="margin-top:12px">Nuestros inicios</h3>
                 <p style="color:#4e6b55">La finca se estableció hace varias décadas con el objetivo de producir cacao de alta calidad, conservando técnicas tradicionales y adaptando mejoras agronómicas.</p>
                 <h3>Compromiso social</h3>

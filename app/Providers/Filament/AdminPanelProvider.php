@@ -27,12 +27,15 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
-            ->id('admin')
-            ->path('admin')
-            ->login()
-            ->font('Kite One')
+        ->default()
+        ->id('admin')
+        ->path('admin')
+        ->viteTheme('resources/css/filament/admin/theme.css')
+        ->font('SN Pro')
+        
+        ->login()
 
+        //->login(\App\Filament\Pages\Auth\Login::class)
 
 
             // ->loginRouteSlug('login')
@@ -49,10 +52,11 @@ class AdminPanelProvider extends PanelProvider
 
 
             //para que le nav salga arriba
-            ->topNavigation()
+            //->topNavigation()
             //navbar retactil
-            //->sidebarCollapsibleOnDesktop()
-            //  ->collapsedSidebarWidth('9rem')
+            ->sidebarCollapsibleOnDesktop()
+            ->collapsedSidebarWidth('9rem')
+
 
             //->sidebarFullyCollapsibleOnDesktop()
             ->favicon('favicon.ico')
@@ -60,14 +64,29 @@ class AdminPanelProvider extends PanelProvider
             //logo de la aplicacion
             ->brandLogo(asset('images/logo.png'))
             //tamaño del logo
-             ->brandLogoHeight('5rem')
+            ->brandLogoHeight('5rem')
+
             ->colors([
-                'primary' => Color::Amber,
+                'primary'   => \Filament\Support\Colors\Color::hex('#4E2C0F'),   // Marrón Chocolate Profundo
+                'gray'      => \Filament\Support\Colors\Color::hex('#F2EBE3'),   // Crema Pergamino
+                'success'   => \Filament\Support\Colors\Color::hex('#606C38'),   // Verde Follaje Cacao
+                'warning'   => \Filament\Support\Colors\Color::hex('#D4A373'),   // Amarillo Mazorca Madura
+                'danger'    => \Filament\Support\Colors\Color::hex('#BC4749'),   // Rojo Óxido
+                'info'      => \Filament\Support\Colors\Color::hex('#2A9D8F'),   // Verde Agua Suave
             ])
+            //personaliaction of color wiht theme css
+            ->viteTheme('resources/css/filament/admin/theme.css')
+
+            //login page personalizada
+
+            //Disabling dark mode
+            ->darkMode(false)
+
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
+                
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
@@ -89,6 +108,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                \App\Http\Middleware\FilamentAuthenticate::class,
             ]);
         
 
