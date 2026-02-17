@@ -3,12 +3,12 @@
 namespace App\Filament\Resources\DatosGenerales\Schemas;
 
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\FusedGroup;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Card;
-use Filament\Forms\Components\Grid;
-use Filament\Schemas\Components\Section;
 
 class DatosGeneralesForm
 {
@@ -16,133 +16,123 @@ class DatosGeneralesForm
     {
         return $schema
             ->components([
-                TextInput::make('nombre_finca')
-                    ->label('Nombre de la finca')
-                    ->required()
-                    ->maxLength(100)
-                    ->regex('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/')
-                    ->validationMessages([
-                        'regex' => 'Solo se permiten letras, espacios y guiones',
+
+                // SECCIÓN 1: IDENTIFICACIÓN - FONDO MARRÓN CACAO
+                Section::make('Identificación de la Finca')
+                    ->description('Información principal y propiedad del predio.')
+                    ->icon('heroicon-o-home-modern')
+                    ->extraAttributes([
+                        'class' => 'bg-[#4E2C0F]/5 border-t-4 border-[#4E2C0F] rounded-xl shadow-sm',
                     ])
-                    ->live(),
+                    ->schema([
+                        TextInput::make('nombre_finca')
+                            ->label('Nombre de la Finca')
+                            ->required()
+                            ->maxLength(100)
+                            ->regex('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/')
+                            ->placeholder('Ej: Hacienda La Esperanza'),
 
-                TextInput::make('propietario')
-                    ->label('Propietario')
-                    ->required()
-                    ->maxLength(100)
-                    ->regex('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/')
-                    ->validationMessages([
-                        'regex' => 'El propietario solo puede contener letras y espacios',
+                        TextInput::make('propietario')
+                            ->label('Propietario Legal')
+                            ->required()
+                            ->maxLength(100)
+                            ->regex('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'),
+
+                        FusedGroup::make([
+                            TextInput::make('contacto_email')
+                                ->label('Email de contacto')
+                                ->placeholder('ejemplo@dominio.com')
+                                ->email()
+                                ->rules([
+                                    'nullable',
+                                    'email:rfc,dns',
+                                    'not_regex:/@(mailinator|tempmail|yopmail)\./i',
+                                ]),
+
+                            TextInput::make('telefono')
+                                ->label('Teléfono')
+                                ->tel()
+                                ->placeholder('+593 ...'),
+                        ]),
                     ])
-                    ->live(),
+                    ->columns(2),
 
-                TextInput::make('area_hectareas')
-                    ->label('Área (ha)')
-                    ->numeric()
-                    ->minValue(0.1)
-                    ->maxValue(99999.99)
-                    ->step(0.01)
-                    ->nullable(),
-
-                TextInput::make('ubicacion')
-                    ->label('Ubicación')
-                    ->maxLength(150)
-                    ->nullable(),
-
-                TextInput::make('lat')
-                    ->label('Latitud')
-                    ->numeric()
-                    ->minValue(-90)
-                    ->maxValue(90)
-                    ->step(0.0001)
-                    ->nullable(),
-
-                TextInput::make('lng')
-                    ->label('Longitud')
-                    ->numeric()
-                    ->minValue(-180)
-                    ->maxValue(180)
-                    ->step(0.0001)
-                    ->nullable(),
-
-                TextInput::make('tipo_suelo')
-                    ->label('Tipo de suelo')
-                    ->maxLength(50)
-                    ->regex('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/')
-                    ->validationMessages([
-                        'regex' => 'Solo se permiten letras, espacios y guiones',
+                // SECCIÓN 2: GEOGRAFÍA - FONDO VERDE FOLLAJE
+                Section::make('Ubicación y Territorio')
+                    ->description('Detalles geográficos y extensión del área.')
+                    ->icon('heroicon-o-map')
+                    ->extraAttributes([
+                        'class' => 'bg-[#606C38]/5 border-t-4 border-[#606C38] rounded-xl shadow-sm',
                     ])
-                    ->nullable(),
+                    ->schema([
+                        TextInput::make('ubicacion')
+                            ->label('Dirección / Referencia')
+                            ->maxLength(150)
+                            ->columnSpanFull(),
 
-                TextInput::make('variedad_cacao')
-                    ->label('Variedad de cacao')
-                    ->maxLength(50)
-                    ->regex('/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-]+$/')
-                    ->validationMessages([
-                        'regex' => 'Solo se permiten letras, números, espacios y guiones',
+                        TextInput::make('area_hectareas')
+                            ->label('Área Total (ha)')
+                            ->numeric()
+                            ->suffix('ha')
+                            ->step(0.01),
+
+                        TextInput::make('altitud_m')
+                            ->label('Altitud')
+                            ->numeric()
+                            ->suffix('msnm'),
+
+                        FusedGroup::make([
+                            TextInput::make('lat')
+                                ->label('Latitud')
+                                ->numeric()
+                                ->step(0.0001)
+                                ->placeholder('latitud'),
+
+                            TextInput::make('lng')
+                                ->label('Longitud')
+                                ->numeric()
+                                ->step(0.0001)
+                                ->placeholder('longitud'),
+                        ])->label('Coordenadas GPS'),
                     ])
-                    ->nullable(),
+                    ->columns(2),
 
-                TextInput::make('altitud_m')
-                    ->label('Altitud (m)')
-                    ->numeric()
-                    ->minValue(0)
-                    ->maxValue(8848)
-                    ->nullable(),
-
-                TextInput::make('lluvia_media_mm')
-                    ->label('Lluvia media (mm)')
-                    ->numeric()
-                    ->minValue(0)
-                    ->maxValue(99999)
-                    ->nullable(),
-
-                TextInput::make('contacto_email')
-                    ->label('Email de contacto')
-                    ->maxLength(100)
-                    ->nullable()
-                    ->live(onBlur: true)
-                    ->rules([
-                        'nullable',
-                        'email:rfc,dns',
-                        'not_regex:/@(mailinator|tempmail|guerrillamail|10minutemail|yopmail|dispostable|throwawaymail|fakeinbox|sharklasers|getnada)\./i',
+                // SECCIÓN 3: TÉCNICO Y PRODUCCIÓN - FONDO AMARILLO MAZORCA
+                Section::make('Especificaciones Agronómicas')
+                    ->icon('heroicon-o-sparkles')
+                    ->extraAttributes([
+                        'class' => 'bg-[#D4A373]/5 border-t-4 border-[#D4A373] rounded-xl shadow-sm',
                     ])
-                    ->validationMessages([
-                        'email' => 'El correo electrónico no tiene un formato válido o el dominio no existe',
-                        'not_regex' => 'No se permiten correos temporales',
-                    ]) ,
+                    ->schema([
+                        TextInput::make('variedad_cacao')
+                            ->label('Variedad de Cacao Principal')
+                            ->placeholder('Ej: CCN-51, Nacional...'),
 
+                        TextInput::make('tipo_suelo')
+                            ->label('Tipo de Suelo'),
 
-                TextInput::make('telefono')
-                    ->label('Teléfono')
-                    ->tel()
-                    ->regex('/^[0-9\+\-\s\(\)]+$/')
-                    ->maxLength(20)
-                    ->validationMessages([
-                        'regex' => 'El teléfono solo puede contener números, +, - y espacios',
+                        TextInput::make('lluvia_media_mm')
+                            ->label('Pluviometría Media')
+                            ->numeric()
+                            ->suffix('mm/año'),
+
+                        Toggle::make('certificado_organico')
+                            ->label('¿Posee Certificación Orgánica?')
+                            ->onIcon('heroicon-m-check')
+                            ->offIcon('heroicon-m-x-mark')
+                            ->inline(false),
                     ])
-                    ->live()
-                    ->nullable(),
+                    ->columns(2),
 
-                Toggle::make('certificado_organico')
-                    ->label('Certificado orgánico')
-                    ->default(false),
-
-                Section::make('Notas extras')
-                    ->description('Notas adicionales sobre la finca')
+                // SECCIÓN 4: NOTAS EXTRAS
+                Section::make('Observaciones Adicionales')
+                    ->collapsed() // Esta sección inicia cerrada para ahorrar espacio
                     ->schema([
                         Textarea::make('notas')
-                            ->label('Notas')
-                            ->maxLength(500)
+                            ->label('Notas de la Finca')
                             ->rows(3)
-                            ->nullable()
-                            ->helperText('Máximo 500 caracteres'),
-                    ])
-                    ->secondary()
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 }
-
-
-
-

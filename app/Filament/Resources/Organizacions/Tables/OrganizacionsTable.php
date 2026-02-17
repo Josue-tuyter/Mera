@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use Filament\Actions\EditAction as ActionsEditAction;
 use Filament\Actions\DeleteBulkAction;
 use Illuminate\Database\Eloquent\Collection;
+use Filament\Tables\Actions\Action;
+use Filament\Actions\BulkActionGroup;
 
 
 
@@ -122,8 +124,10 @@ class OrganizacionsTable
             ->actions([ 
                 ActionsEditAction::make(),
             ])
-            ->headerActions([
-                DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 }

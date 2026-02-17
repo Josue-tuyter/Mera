@@ -22,19 +22,12 @@ class EquiposYHerramientaForm
                 
                 // SECCIÓN 1: IDENTIFICACIÓN - FONDO MARRÓN CACAO
                 Section::make('Identificación del Equipo')
-                    ->description('Sube una foto real del equipo y asigna su identificador.')
+                    ->description('Escribe los datos del equipo.')
                     ->icon('heroicon-o-identification')
                     ->extraAttributes([
                         'class' => 'bg-[#4E2C0F]/5 border-t-4 border-[#4E2C0F] rounded-xl shadow-sm',
                     ])
                     ->schema([
-                        FileUpload::make('imagen_url')
-                            ->label('Fotografía')
-                            ->image()
-                            ->directory('equipos')
-                            ->imageEditor()
-                            ->columnSpan(1),
-
                         Group::make([
                             TextInput::make('nombre')
                                 ->label('Nombre')
@@ -55,9 +48,9 @@ class EquiposYHerramientaForm
                                     'regex' => 'Solo se permiten letras, números, guiones y barras',
                                 ])
                                 ->live(),
-                        ])->columnSpan(1),
+                        ])->columnSpan(2),
                     ])
-                    ->columns(2),
+                    ->columns(3),
 
                 // SECCIÓN 2: UBICACIÓN - FONDO VERDE FOLLAJE
                 Section::make('Ubicación y Gestión')

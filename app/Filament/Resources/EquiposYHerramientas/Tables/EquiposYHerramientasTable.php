@@ -2,15 +2,21 @@
 
 namespace App\Filament\Resources\EquiposYHerramientas\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\DateColumn;
-use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
+use Filament\Actions\EditAction as ActionsEditAction;
+use Filament\Actions\DeleteBulkAction;
+use Illuminate\Database\Eloquent\Collection;
+use Filament\Tables\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\EditAction;
+
 
 class EquiposYHerramientasTable
 {
@@ -18,34 +24,76 @@ class EquiposYHerramientasTable
     {
         return $table
             ->columns([
+                // Imagen
+                ImageColumn::make('imagen_url')
+                    ->label('Foto')
+                    ->circular()
+                    ->defaultImageUrl(url('/images/imgs/equipo.png'))
+                    ->size(45),
+
+                // Nombre
                 TextColumn::make('nombre')
-                    ->label('Nombre')->searchable()->sortable(),
-                TextColumn::make('serial')
-                    ->label('Serial')->toggleable(),
-                BooleanColumn::make('disponible')
-                    ->label('Disponible')->sortable(),
+                    ->label('Equipo')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold')
+                    ->color('primary')
+                    ->description(fn ($record) => "S/N: " . ($record->serial ?? 'Sin registro')),
+
+                // Estado
+                IconColumn::make('disponible')
+                    ->label('Estado')
+                    ->boolean()
+                    ->trueIcon('heroicon-s-check-circle')
+                    ->falseIcon('heroicon-s-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->alignCenter(),
+
+                // Mantenimiento
                 TextColumn::make('proximo_mantenimiento')
-                    ->label('Próximo mantenimiento')->toggleable(),
+                    ->label('Mantenimiento')
+                    ->date('d M, Y')
+                    ->sortable()
+                    ->badge()
+                    ->color(fn ($state) => $state && Carbon::parse($state)->isPast() ? 'danger' : 'warning')
+                    ->icon('heroicon-m-calendar'),
+
                 TextColumn::make('ubicacion')
-                    ->label('Ubicación')->toggleable(),
+                    ->label('Ubicación')
+                    ->icon('heroicon-m-map-pin')
+                    ->toggleable(),
+
                 TextColumn::make('responsable.name')
-                    ->label('Responsable')->toggleable()->searchable(),
+                    ->label('Responsable')
+                    ->toggleable(),
+
                 TextColumn::make('costo_mantenimiento_estimado')
-                    ->label('Costo mantenimiento')->numeric()->toggleable(),
+                    ->label('Costo')
+                    ->money('USD')
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([
-                SelectFilter::make('responsable_id')->label('Responsable')->relationship('responsable','name'),
+                SelectFilter::make('responsable_id')
+                    ->label('Responsable')
+                    ->relationship('responsable', 'name')
+                    ->searchable()
+                    ->preload(),
+
                 Filter::make('needing_maintenance')
                     ->label('Necesita mantenimiento')
-                    ->query(fn($query) => $query->whereColumn('proximo_mantenimiento', '<=', now())),
+                    ->query(fn (Builder $query) => $query->where('proximo_mantenimiento', '<=', now())),
             ])
-            ->recordActions([
-                EditAction::make(),
+            // AQUÍ ESTÁ LA SOLUCIÓN: USAMOS LA RUTA COMPLETA CON "\" AL INICIO
+            ->actions([ 
+                ActionsEditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
             ]);
+            //->striped();
     }
 }

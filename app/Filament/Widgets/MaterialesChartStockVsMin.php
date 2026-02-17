@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 class MaterialesChartStockVsMin extends ChartWidget
 {
     protected ?string $heading = 'Stock vs Stock mínimo (selección)';
+    
+    protected ?string $maxHeight = '400px';
 
     protected function getData(): array
     {
@@ -19,10 +21,42 @@ class MaterialesChartStockVsMin extends ChartWidget
 
         return [
             'datasets' => [
-                ['label' => 'Stock', 'data' => $rows->pluck('stock')->all(), 'backgroundColor' => 'rgba(72,187,120,0.7)'],
-                ['label' => 'Stock mínimo', 'data' => $rows->pluck('stock_minimo')->all(), 'backgroundColor' => 'rgba(255,99,71,0.5)'],
+                [
+                    'label' => 'Stock Actual', 
+                    'data' => $rows->pluck('stock')->all(), 
+                    'backgroundColor' => '#BF712C', // Bronce Cacao
+                    'borderRadius' => 4,
+                ],
+                [
+                    'label' => 'Stock Mínimo', 
+                    'data' => $rows->pluck('stock_minimo')->all(), 
+                    'backgroundColor' => '#BF304A', // Rojo Cacao (Alerta)
+                    'borderRadius' => 4,
+                ],
             ],
             'labels' => $rows->pluck('nombre')->all(),
+        ];
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'maintainAspectRatio' => false,
+            'scales' => [
+                'y' => [
+                    'beginAtZero' => true,
+                    'grid' => ['display' => false],
+                ],
+                'x' => [
+                    'grid' => ['display' => false],
+                ],
+            ],
+            'plugins' => [
+                'legend' => [
+                    'display' => true,
+                    'position' => 'bottom',
+                ],
+            ],
         ];
     }
 

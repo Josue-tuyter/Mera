@@ -1,12 +1,15 @@
 <x-filament-panels::page>
-     <div class="max-w-xl space-y-6">
+    <form wire:submit.prevent="generarReporte" class="space-y-6">
         {{ $this->form }}
 
-        <x-filament::button
-            wire:click="generarReporte"
-            color="primary"
-        >
-            Generar reporte
-        </x-filament::button>
-    </div>
+        <div class="flex justify-start">
+            <x-filament::button 
+                type="submit" 
+                size="lg"
+                class="bg-[#4E2C0F] hover:bg-[#606C38] shadow-md"
+            >
+                Generar reporte
+            </x-filament::button>
+        </div>
+    </form>
 </x-filament-panels::page>

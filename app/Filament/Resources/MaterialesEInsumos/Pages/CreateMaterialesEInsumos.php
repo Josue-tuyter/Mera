@@ -4,6 +4,7 @@ namespace App\Filament\Resources\MaterialesEInsumos\Pages;
 
 use App\Filament\Resources\MaterialesEInsumos\MaterialesEInsumosResource;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Support\Enums\MaxWidth;
 
 class CreateMaterialesEInsumos extends CreateRecord
 {
@@ -13,4 +14,6 @@ class CreateMaterialesEInsumos extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+
 }

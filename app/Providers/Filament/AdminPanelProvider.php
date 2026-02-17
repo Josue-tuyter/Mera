@@ -30,7 +30,7 @@ class AdminPanelProvider extends PanelProvider
         ->default()
         ->id('admin')
         ->path('admin')
-        ->viteTheme('resources/css/filament/admin/theme.css')
+
         ->font('SN Pro')
         
         ->login()
@@ -68,7 +68,7 @@ class AdminPanelProvider extends PanelProvider
 
             ->colors([
                 'primary'   => \Filament\Support\Colors\Color::hex('#4E2C0F'),   // Marrón Chocolate Profundo
-                'gray'      => \Filament\Support\Colors\Color::hex('#F2EBE3'),   // Crema Pergamino
+                'gray'      => \Filament\Support\Colors\Color::hex('#D9A50B'),   // Crema Pergamino
                 'success'   => \Filament\Support\Colors\Color::hex('#606C38'),   // Verde Follaje Cacao
                 'warning'   => \Filament\Support\Colors\Color::hex('#D4A373'),   // Amarillo Mazorca Madura
                 'danger'    => \Filament\Support\Colors\Color::hex('#BC4749'),   // Rojo Óxido
@@ -109,7 +109,10 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
                 \App\Http\Middleware\FilamentAuthenticate::class,
-            ]);
+            ])
+
+            ->viteTheme('resources/css/filament/admin/theme.css');
+
         
 
             

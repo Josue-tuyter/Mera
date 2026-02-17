@@ -5,14 +5,12 @@ namespace App\Filament\Pages;
 use Filament\Pages\Page;
 use BackedEnum;
 use UnitEnum;
-
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
-use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema; 
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Concerns\InteractsWithForms;
-
-
 use Maatwebsite\Excel\Facades\Excel;
 
 // Exports
@@ -21,20 +19,11 @@ use App\Exports\EquiposYHerramientasExport;
 use App\Exports\MaterialesEInsumosExport;
 use App\Exports\UsuariosExport;
 
-
-//pdf
-
-use App\Pdf\{
-    RegistroAtividadesPdf,
-    EquiposYHerramientasPdf,
-    MaterialesEInsumosPdf,
-    UsuariosPdf
-};  
-
 class Reportes extends Page implements HasForms
 {
     use InteractsWithForms;
 
+    // --- Configuración de Navegación ---
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-arrow-down';
     protected static ?string $navigationLabel = 'Reportes';
     protected static string|UnitEnum|null $navigationGroup = 'Reportes';
@@ -45,46 +34,87 @@ class Reportes extends Page implements HasForms
     public array $data = [];
 
     /**
-     * Formulario
+     * Fuerza a la página a ocupar todo el ancho disponible (Full Width)
+     */
+    public function getMaxContentWidth(): string
+    {
+        return 'full';
+    }
+
+    public function mount(): void
+    {
+        $this->form->fill();
+    }
+
+    /**
+     * Definición del Formulario usando Schema
      */
     public function form(Schema $form): Schema
     {
         return $form
             ->components([
-                Select::make('recurso')
-                    ->label('Recurso a reportar')
-                    ->required()
-                    ->options([
-                        'actividades' => 'Registro de actividades',
-                        'equipos'     => 'Equipos y herramientas',
-                        'insumos'     => 'Materiales e insumos',
-                        'usuarios'    => 'Usuarios',
-                    ])
-                    ->reactive(),
-
-                Select::make('formato')
-                    ->label('Formato')
-                    ->required()
-                    ->options([
-                        'excel' => 'Excel',
-                         'pdf' => 'PDF'
-                    ]),
-
-                DatePicker::make('fecha_inicio')
-                    ->label('Desde')
-                    ->visible(fn ($get) => $get('recurso') === 'actividades')
-                    ->native(false)
-                    ,
-
-                DatePicker::make('fecha_fin')
-                    ->label('Hasta')
-                    ->native(false)
-                    ->suffixIcon('heroicon-m-calendar')
-                    ->visible(fn ($get) => $get('recurso') === 'actividades'),
-            ])
-            ->statePath('data');     
                 
+                Section::make('Configuración del Reporte')
+                    ->description('Seleccione el recurso y el formato para exportar la información.')
+                    ->icon('heroicon-o-document-magnifying-glass')
+                    ->extraAttributes([
+                        'class' => 'bg-[#4E2C0F]/5 border-t-4 border-[#4E2C0F] rounded-xl shadow-sm',
+                    ])
+                    ->columns(2)
+                    ->schema([
+                        
+                        Select::make('recurso')
+                            ->label('Recurso a reportar')
+                            ->prefixIcon('heroicon-m-rectangle-stack')
+                            ->required()
+                            ->options([
+                                'actividades' => 'Registro de actividades',
+                                'equipos'     => 'Equipos y herramientas',
+                                'insumos'     => 'Materiales e insumos',
+                                'usuarios'    => 'Usuarios',
+                            ])
+                            ->native(false)
+                            ->reactive(),
+
+                        Select::make('formato')
+                            ->label('Formato de descarga')
+                            ->prefixIcon('heroicon-m-arrow-down-tray')
+                            ->required()
+                            ->options([
+                                'excel' => 'Microsoft Excel (.xlsx)',
+                                'pdf'   => 'Documento PDF (.pdf)'
+                            ])
+                            ->native(false),
+
+                        // Sección de fechas con estilo Verde Follaje
+                        Section::make('Filtros de Período')
+                            ->description('Opcional: Define un rango de fechas para el reporte.')
+                            ->icon('heroicon-o-calendar-days')
+                            ->visible(fn ($get) => $get('recurso') === 'actividades')
+                            ->extraAttributes([
+                                'class' => 'bg-[#606C38]/10 border border-[#606C38]/20 rounded-lg mt-2',
+                            ])
+                            ->columnSpanFull()
+                            ->columns(2)
+                            ->schema([
+                                DatePicker::make('fecha_inicio')
+                                    ->label('Desde')
+                                    ->prefixIcon('heroicon-m-calendar')
+                                    ->native(false),
+
+                                DatePicker::make('fecha_fin')
+                                    ->label('Hasta')
+                                    ->prefixIcon('heroicon-m-calendar-days')
+                                    ->native(false),
+                            ]),
+                    ]),
+            ])
+            ->statePath('data');
     }
+
+    /**
+     * Lógica para procesar y descargar los archivos
+     */
     public function generarReporte()
     {
         $data = $this->form->getState();
@@ -94,7 +124,7 @@ class Reportes extends Page implements HasForms
         }
 
         // ---------------------------
-        // EXCEL
+        // Lógica para EXCEL
         // ---------------------------
         if ($data['formato'] === 'excel') {
 
@@ -129,7 +159,7 @@ class Reportes extends Page implements HasForms
         }
 
         // ---------------------------
-        // PDF
+        // Lógica para PDF (Redirección a Rutas)
         // ---------------------------
         if ($data['formato'] === 'pdf') {
 

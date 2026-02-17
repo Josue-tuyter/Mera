@@ -25,6 +25,7 @@ class Actividaes extends StatsOverviewWidget
 
         $avgDurationFormatted = $avgDuration ? round($avgDuration, 1) . ' min' : 'N/A';
 
+        // Tipos más comunes
         $topTypes = DB::table($table)
             ->select('tipo_actividad', DB::raw('count(*) as cnt'))
             ->whereNotNull('tipo_actividad')
@@ -33,12 +34,11 @@ class Actividaes extends StatsOverviewWidget
             ->limit(2)
             ->get()
             ->pluck('tipo_actividad')
-            ->filter()
-            ->values()
             ->all();
 
         $topTypesDesc = $topTypes ? implode(', ', $topTypes) : '—';
 
+        // Último registro
         $recent = DB::table($table)
             ->select('fecha', 'hora', 'tipo_actividad', 'parcela')
             ->orderByDesc('fecha')
@@ -48,34 +48,36 @@ class Actividaes extends StatsOverviewWidget
 
         $recentDesc = 'Sin registros';
         if ($recent) {
-            $when = $recent->fecha . ($recent->hora ? ' ' . substr($recent->hora, 0, 5) : '');
+            $when = Carbon::parse($recent->fecha)->format('d/m') . ($recent->hora ? ' ' . substr($recent->hora, 0, 5) : '');
             $recentDesc = sprintf('%s — %s (%s)', $when, $recent->tipo_actividad ?? '—', $recent->parcela ?? 'sin parcela');
         }
 
         return [
             Stat::make('Total actividades', $total)
-                ->description('Registros totales en la tabla')
-                ->descriptionIcon('heroicon-o-queue-list')
-                ->color('primary'),
+                ->description('Patrimonio de registros')
+                ->descriptionIcon('heroicon-m-rectangle-group')
+                ->chart([7, 4, 10, 3, 15, 4, $total]) // Gráfico de actividad
+                ->color('info'),
 
             Stat::make('Hoy', $today)
-                ->description('Actividades registradas hoy')
-                ->descriptionIcon('heroicon-o-sun')
+                ->description('Nuevas tareas')
+                ->descriptionIcon('heroicon-m-bolt')
+                ->chart([0, 2, 5, 3, $today])
                 ->color('warning'),
 
             Stat::make('Duración promedio', $avgDurationFormatted)
-                ->description('Promedio en minutos (solo registros con duración)')
-                ->descriptionIcon('heroicon-o-clock')
-                ->color('secondary'),
-
-            Stat::make('Tipos más comunes', $topTypesDesc)
-                ->description('Top 2 tipos de actividad')
-                ->descriptionIcon('heroicon-o-arrow-trending-up')
+                ->description('Eficiencia por tarea')
+                ->descriptionIcon('heroicon-m-clock')
                 ->color('success'),
 
-            Stat::make('Último registro', $recent ? 'Ver detalle' : '—')
+            Stat::make('Más comunes', $topTypesDesc)
+                ->description('Tipos predominantes')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->color('primary'),
+
+            Stat::make('Último registro', $recent ? 'Activo' : '—')
                 ->description($recentDesc)
-                ->descriptionIcon('heroicon-o-document-text')
+                ->descriptionIcon('heroicon-m-arrow-path')
                 ->color('gray'),
         ];
     }

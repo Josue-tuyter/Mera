@@ -1,228 +1,306 @@
-@import '/vendor/filament/filament/resources/css/theme.css';
-@config 'tailwind.config.js';
+/* 1. IMPORTACIONES Y CONFIGURACIÓN */
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
 
-/* Fondo general del panel (después del login) */
-.fi-body {
-    @apply bg-gradient-to-br from-[#f7fff7] via-[#f0fff4] to-[#e6f4ea]; /* tonos muy claros de tu welcome */
+@source '../../../../app/Filament/**/*';    
+@source '../../../../resources/views/filament/**/*';   
+@source '../../../../vendor/filament/**/*.blade.php';
+
+/* --- PALETA DE COLORES COCOA DEFINITIVA --- */
+:root {
+    --bg-amarillo-cacao: #e5cfa6;  /* Tu color solicitado para el fondo */
+    --cocoa-dark: #8C4830;         /* Marrón Cacao (Estructuras) */
+    --cocoa-bronze: #BF712C;       /* Bronce (Detalles) */
+    --cocoa-red: #BF304A;          /* Rojo (Alertas) */
+    --sidebar-text: #432a1a;
 }
 
-/* Fondo del login (pantalla de acceso admin) */
-.fi-login {
-    @apply bg-gradient-to-br from-[#f7fff7] via-[#f0fff4] to-[#e6f4ea];
-    /* Si tienes una imagen de plantación o mazorcas: */
-    /* background-image: url('/images/fondo-cacao-admin.jpg'); */
-    /* background-size: cover; */
-    /* background-position: center; */
+/* --- FONDO DEL SISTEMA (AMARILLO CACAO UNIFICADO)f --- */
+body, 
+.fi-main, 
+.fi-topbar, 
+.fi-page-header-main-ctn {
+    background-color: var(--bg-amarillo-cacao) !important;
 }
 
-/* Panel central del login más sutil (vidrio esmerilado) */
-.fi-login-main {
-    @apply bg-white/80 backdrop-blur-md border border-green-200/60 shadow-2xl rounded-2xl;
-}
-
-/* Navegación superior (top navigation que usas) */
+/* Unificación de Topbar sin líneas */
 .fi-topbar {
-    @apply bg-white/90 backdrop-blur-sm border-b border-green-100 shadow-sm;
-}
-.fi-topbar-item-active {
-    @apply text-[#2f855a] font-semibold border-b-2 border-[#2f855a];
+    border: none !important;
+    box-shadow: none !important;
 }
 
-/* Tablas */
-.fi-table {
-    @apply border border-green-100 rounded-xl overflow-hidden;
-}
-.fi-table-row-odd {
-    @apply bg-[#f0fff4]/60; /* rayas claras como tu welcome */
-}
-.fi-table-row-hover:hover {
-    @apply bg-[#e6f4ea]/80;
-}
-.fi-table-th {
-    @apply bg-[#2f855a]/10 text-[#2f855a] font-semibold;
-}
-
-/* Cards / Widgets del dashboard */
-.fi-card {
-    @apply border border-green-100 shadow-md rounded-xl bg-white/90;
-}
-
-/* Botones primarios */
-.fi-btn-primary {
-    @apply bg-[#2f855a] hover:bg-[#276749] text-white;
-}
-
-/* Si quieres sidebar (aunque usas top nav, por si la activas después) */
+/* --- SIDEBAR SUTIL --- */
 .fi-sidebar {
-    @apply bg-[#07321b]/95 text-white;
-}
-.fi-sidebar-item-active {
-    @apply bg-[#2f855a]/80;
-}
-
-/* ----------------------------------------------------------------------------------------------------------------------- */
-
-/* Fondo del login */
-.fi-login {
-    @apply bg-gradient-to-br from-amber-100 via-orange-50 to-yellow-50;
+    background-color: rgba(255, 255, 255, 0.3) !important; /* Transparencia sobre el fondo amarillo */
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(140, 72, 47, 0.1) !important;
 }
 
-/* O con imagen de fondo (recomendado para tema cacao) */
-.fi-login {
-    background-image: url('/images/fondo-login-cacao.jpg');  /* sube la imagen a public/images */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+.fi-sidebar-item-label, 
+.fi-sidebar-group-label {
+    color: var(--sidebar-text) !important;
+    font-weight: 700;
 }
 
-/* Panel del formulario (blanco por defecto) */
-.fi-login-main {
-    @apply bg-white/90 backdrop-blur-sm shadow-2xl border border-amber-200;
-    border-radius: 1.5rem;
+/* --- EFECTO FLOTANTE DE TABLA (MÁXIMO IMPACTO) --- */
+.fi-ta-ctn {
+    background-color: white !important;
+    border-radius: 24px !important;
+    border: none !important;
+    /* Sombra 3D profunda */
+    box-shadow: 0 20px 50px -12px rgba(67, 42, 26, 0.25) !important;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    margin-top: 20px;
 }
 
-/* Logo en login */
-.fi-login-brand {
-    @apply h-24;  /* más grande si quieres */
+/* Reacción al Hover: La tabla se eleva y brilla */
+.fi-ta-ctn:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 30px 60px -15px rgba(67, 42, 26, 0.35) !important;
 }
 
-/* ------------------------------------------------------------------------------------------------------------------------ */
-/* Dashboard específico */
-.fi-dashboard {
-    @apply relative;
+/* --- CABECERA DE TABLA (COCOA DARK) --- */
+.fi-ta-header-toolbar {
+    background-color: var(--cocoa-dark) !important;
+    padding: 1.5rem !important;
 }
 
-/* Fondo del contenido principal */
-.fi-main {
-    @apply bg-gradient-to-br from-[#f7fff7] via-[#f0fff4] to-[#e6f4ea] min-h-screen;
+/* Forzar iconos y buscador blancos en cabecera */
+.fi-ta-header-toolbar h2, 
+.fi-ta-header-toolbar span,
+.fi-ta-header-toolbar svg {
+    color: #5b0000 !important;
 }
 
-/* Header widgets area */
-.fi-header-widgets {
-    @apply bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-[#2f855a]/20;
+/* --- THEAD (CREMA) --- */
+.fi-ta-header-cell {
+    background-color: #fdf8f3 !important;
+    border-bottom: 2px solid var(--cocoa-bronze);
+}
+
+/* --- SOLUCIÓN: TEXTO EN BOTONES DE FILTRO Y ACCIONES --- */
+.fi-ta-actions, 
+.fi-dropdown-list-item,
+.fi-dropdown-list-item-label,
+.fi-ta-col-manager-label {
+    color: var(--cocoa-dark) !important; /* Texto oscuro para que se lea sobre blanco */
+    font-weight: 700 !important;
+}
+
+/* Botón "Abrir acciones" dentro de la tabla */
+.fi-ac-btn-group, .fi-btn.fi-ac-btn-action {
+    background-color: white !important;
+    color: var(--cocoa-dark) !important;
+    border: 2px solid var(--cocoa-bronze) !important;
+}
+
+/* --- FILAS CON EMPUJE LATERAL --- */
+.fi-ta-row {
+    transition: all 0.3s ease;
+}
+
+.fi-ta-row:hover {
+    background-color: #fff9f2 !important;
+    transform: translateX(12px);
+    box-shadow: inset 5px 0 0 0 var(--bg-amarillo-cacao);
+}
+
+/* --- BOTÓN "CREAR" (ESTILO PREMIUM) --- */
+.fi-ac-btn-action {
+    background-color: var(--cocoa-dark) !important;
+    color: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(140, 72, 47, 0.3) !important;
+}
+
+.fi-ac-btn-action:hover {
+    background-color: #f7c057 !important;
+    transform: translateY(-3px);
+}
+
+/* --- BUSCADOR --- */
+.fi-ta-search-field .fi-input-wrp {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 9999px !important;
+}
+
+.fi-ta-search-field .fi-input-wrp:focus-within {
+    background-color: white !important;
+    color: var(--cocoa-dark) !important;
 }
 
 
+/* --- PERSONALIZACIÓN DE WIDGETS (STATS OVERVIEW) --- */
 
-
-
-/* Fondo general del panel (después del login) */
-.fi-body {
-    @apply bg-gradient-to-br from-[#f7fff7] via-[#f0fff4] to-[#e8f5e9];
-}
-
-/* Contenedor principal de tablas */
-.fi-table-container {
-    @apply rounded-2xl overflow-hidden border border-[#8bd3a9]/30 shadow-md;
+/* Contenedor de cada tarjeta de estadística */
+.fi-wi-stats-overview-stat {
+    background-color: white !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(140, 72, 47, 0.1) !important;
+    box-shadow: 0 10px 25px -5px rgba(67, 42, 26, 0.1) !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }
 
-/* Tabla base */
-.fi-table {
-    @apply w-full border-collapse bg-white;
+/* Efecto flotante individual para los widgets */
+.fi-wi-stats-overview-stat:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px -10px rgba(67, 42, 26, 0.2) !important;
 }
 
-/* Encabezados (th) */
-.fi-table th {
-    @apply bg-[#2f855a]/10 text-[#07321b] font-semibold uppercase tracking-wider text-sm py-4 px-6 border-b border-[#8bd3a9]/40;
-    text-align: left;
+/* Ajuste de colores significativos para los gráficos (Charts) */
+
+/* 1. Total Equipos (Info -> Color Bronce) */
+.fi-wi-stats-overview-stat.fi-color-info {
+    --c-400: #BF712C; /* Cocoa-3 */
+    --c-500: #BF712C;
+    --c-600: #8C4830;
 }
 
-/* Celdas normales */
-.fi-table td {
-    @apply py-4 px-6 text-[#4e6b55] border-b border-[#8bd3a9]/20;
+/* 2. Disponibles (Success -> Color Amarillo Cacao) */
+.fi-wi-stats-overview-stat.fi-color-success {
+    --c-400: #F2C063; /* Cocoa-2 */
+    --c-500: #d99e2b;
+    --c-600: #b8861d;
 }
 
-/* Rayas alternas (filas impares) */
-.fi-table tbody tr:nth-child(odd) {
-    @apply bg-[#f0fff4]/60;
+/* 3. No Disponibles (Danger -> Color Rojo Cacao) */
+.fi-wi-stats-overview-stat.fi-color-danger {
+    --c-400: #BF304A; /* Cocoa-1 */
+    --c-500: #BF304A;
+    --c-600: #8C4830;
 }
 
-/* Hover en filas */
-.fi-table tbody tr:hover {
-    @apply bg-[#e6f4ea]/90 transition-colors duration-200;
+/* Estilo para los iconos dentro de los widgets */
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-icon-ctn {
+    background-color: rgba(242, 192, 99, 0.1) !important; /* Fondo suave amarillo */
+    border-radius: 12px;
+    padding: 8px;
 }
 
-/* Primera y última celda de fila (bordes redondeados suaves) */
-.fi-table tbody tr:first-child td:first-child {
-    @apply rounded-tl-lg;
-}
-.fi-table tbody tr:first-child td:last-child {
-    @apply rounded-tr-lg;
-}
-.fi-table tbody tr:last-child td:first-child {
-    @apply rounded-bl-lg;
-}
-.fi-table tbody tr:last-child td:last-child {
-    @apply rounded-br-lg;
+
+/* --- ESTILO PARA EL WIDGET DE GRÁFICO (PIE CHART) --- */
+
+.fi-wi-chart {
+    background-color: white !important;
+    border-radius: 24px !important;
+    border: none !important;
+    box-shadow: 0 15px 40px -12px rgba(67, 42, 26, 0.2) !important;
+    transition: all 0.4s ease !important;
+    padding: 1.5rem !important;
 }
 
-/* Acciones (botones editar, ver, eliminar) */
-.fi-table-actions {
-    @apply flex items-center gap-3;
-}
-.fi-table-actions .fi-btn {
-    @apply text-[#2f855a] hover:text-[#276749] transition-colors;
-}
-.fi-table-actions .fi-btn-danger {
-    @apply text-[#8b2e2e] hover:text-red-800;
+.fi-wi-chart:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -15px rgba(67, 42, 26, 0.3) !important;
 }
 
-/* Paginación */
-.fi-pagination {
-    @apply border-t border-[#8bd3a9]/30 py-4 px-6 bg-white/80;
-}
-.fi-pagination-item {
-    @apply text-[#4e6b55] hover:bg-[#2f855a]/10 rounded-md;
-}
-.fi-pagination-item-active {
-    @apply bg-[#2f855a] text-white font-medium;
+/* Ajuste del título del gráfico */
+.fi-wi-chart h2 {
+    color: #8C4830 !important; /* Marrón Cacao */
+    font-weight: 800 !important;
+    letter-spacing: -0.025em;
+} 
+
+/* --- ELIMINAR ESPACIOS VACÍOS EN WIDGETS DE GRÁFICOS --- */
+
+/* Reduce el espacio interno del Card del widget */
+.fi-wi-chart.fi-section {
+    padding-bottom: 5px !important; 
 }
 
-/* Filtros y búsqueda (si usas) */
-.fi-filters {
-    @apply bg-white/90 backdrop-blur-sm border border-[#8bd3a9]/20 rounded-xl shadow-sm;
-}
-.fi-search-input {
-    @apply border-[#8bd3a9]/40 focus:border-[#2f855a] focus:ring-[#2f855a]/30;
-}
-
-/* Texto vacío (no hay registros) */
-.fi-empty-state {
-    @apply text-[#4e6b55] py-12;
-}
-.fi-empty-state-heading {
-    @apply text-[#07321b] font-semibold;
+/* Fuerza al contenedor del gráfico a usar el alto disponible */
+.fi-wi-chart-canvas-ctn {
+    height: 320px !important; /* Ajusta este valor según cuánto quieras que baje */
+    width: 100% !important;
+    display: flex !important;
+    align-items: stretch !important;
 }
 
-/* --- Personalización Los Mera Cacao --- */
-
-/* Fondo del Login con tu foto de la plantación */
-.fi-login {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-                      url('/images/imgs/img (5).jpeg') !important;
-    background-size: cover !important;
-    background-position: center !important;
+/* Elimina el margen superior del título para ganar espacio arriba */
+.fi-wi-chart h2.fi-section-header-heading {
+    margin-bottom: -10px !important;
 }
 
-/* Panel de login efecto cristal */
-.fi-login-main {
-    @apply bg-white/70 backdrop-blur-lg border-white/30 shadow-2xl !important;
-    border-radius: 2rem !important;
+/* Ajuste específico para que el canvas no deje aire abajo */
+.fi-wi-chart canvas {
+    max-height: 100% !important;
+    margin-bottom: 0 !important;
 }
 
-/* Fondo general del sistema (más orgánico) */
-.fi-body {
-    background-color: #FDFBF7 !important;
-    background-image: radial-gradient(#e5e7eb 0.5px, transparent 0.5px) !important;
-    background-size: 24px 24px !important;
+
+/* --- MAPEO DE COLORES COCOA A STATS WIDGETS --- */
+
+/* Primary -> Rojo Cacao (#BF304A) */
+.fi-color-primary {
+    --c-400: #BF304A;
+    --c-500: #BF304A;
+    --c-600: #8C4830;
 }
 
-/* Encabezados de tablas con color cacao */
-.fi-table-th {
-    @apply bg-[#4E2C0F]/5 text-[#4E2C0F] font-bold uppercase !important;
+/* Warning -> Amarillo Cacao (#F2C063) */
+.fi-color-warning {
+    --c-400: #F2C063;
+    --c-500: #F2C063;
+    --c-600: #BF712C;
 }
 
-/* Botones con bordes más redondeados */
-.fi-btn {
-    @apply rounded-full px-6 !important;
+/* Info -> Bronce (#BF712C) */
+.fi-color-info {
+    --c-400: #BF712C;
+    --c-500: #BF712C;
+    --c-600: #8C4830;
+}
+
+/* Success -> Coral/Rojo Suave (#D94141) */
+.fi-color-success {
+    --c-400: #D94141;
+    --c-500: #D94141;
+    --c-600: #BF304A;
+}
+
+/* Estilo adicional para los textos de descripción en los stats */
+.fi-wi-stats-overview-stat-description {
+    color: #8C4830 !important; /* Marrón Cacao para las descripciones */
+    font-weight: 500;
+}
+
+/* AJUSTE PARA GRÁFICO DE STOCK VS MÍNIMO */
+.fi-wi-chart-canvas-ctn {
+    padding-top: 10px !important;
+}
+
+/* Bordes para que las barras comparativas no se peguen */
+.fi-wi-chart canvas {
+    border-radius: 8px;
+}
+
+/* Mejora de visibilidad de los labels en los ejes */
+.fi-wi-chart span {
+    color: #8C4830 !important; /* Marrón Cacao para las etiquetas del gráfico */
+    font-size: 12px;
+}
+
+/* AJUSTE PARA EL WIDGET DE TABLA DE ALERTAS */
+.fi-wi-table-widget {
+    background-color: white !important;
+    border-radius: 24px !important;
+    box-shadow: 0 20px 50px -12px rgba(67, 42, 26, 0.2) !important;
+    overflow: hidden;
+    border: none !important;
+}
+
+/* Encabezado de la tabla de alertas estilo chocolate */
+.fi-wi-table-widget .fi-section-header {
+    background-color: #8C4830 !important; /* Marrón Cacao */
+    padding: 1rem !important;
+}
+
+.fi-wi-table-widget .fi-section-header-heading {
+    color: white !important;
+}
+
+/* Fila de alerta con leve tinte rojo al pasar el mouse */
+.fi-wi-table-widget .fi-ta-row:hover {
+    background-color: #fff1f1 !important;
+    transform: scale(1.005);
 }

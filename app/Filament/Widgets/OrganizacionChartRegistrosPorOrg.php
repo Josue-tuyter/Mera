@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 class OrganizacionChartRegistrosPorOrg extends ChartWidget
 {
     protected ?string $heading = 'Registros por organización (top 8)';
+    protected ?string $maxHeight = '350px';
 
     protected function getData(): array
     {
@@ -20,8 +21,27 @@ class OrganizacionChartRegistrosPorOrg extends ChartWidget
             ->get();
 
         return [
-            'datasets' => [[ 'label' => 'Registros', 'data' => $rows->pluck('cnt')->all(), 'backgroundColor' => 'rgba(72,187,120,0.7)' ]],
+            'datasets' => [
+                [ 
+                    'label' => 'Registros', 
+                    'data' => $rows->pluck('cnt')->all(), 
+                    'backgroundColor' => '#BF712C', // Bronce Cacao
+                    'borderRadius' => 6,
+                ]
+            ],
             'labels' => $rows->pluck('nombre')->all(),
+        ];
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'maintainAspectRatio' => false,
+            'indexAxis' => 'y', // Convertimos a barras horizontales para mejor lectura de nombres largos
+            'scales' => [
+                'x' => ['grid' => ['display' => false]],
+                'y' => ['grid' => ['display' => false]],
+            ],
         ];
     }
 
