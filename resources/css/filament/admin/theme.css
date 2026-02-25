@@ -304,3 +304,44 @@ body,
     background-color: #fff1f1 !important;
     transform: scale(1.005);
 }
+
+
+
+
+
+/* Aplicamos el fondo al cuerpo principal del panel administrativo */
+.fi-simple-layout {
+    background-image:
+    url("/public/images/imgs/cacao.jpg") !important; /* Foto de la finca */
+    
+    background-attachment: fixed; /* La imagen no se mueve al hacer scroll */
+    background-size: cover;       /* Ajuste perfecto a la pantalla */
+    background-position: center;  /* Centrado de la foto de la finca */
+    background-repeat: no-repeat;
+}
+
+
+/* modificacion de color de fondo */
+.fi-simple-main {
+    /* 1. Bajamos la opacidad al 20% para que el blur "traspase" */
+    background: #ffeccdd9 !important; 
+    
+    /* 2. Subimos el desenfoque (puedes probar entre 40px y 60px) */
+    backdrop-filter: blur(1.5rem) saturate(300%);
+    -webkit-backdrop-filter: blur(1.5rem) saturate(300%);
+
+    /* 3. Un borde muy sutil ayuda a que no se pierda el contenedor */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    
+    /* 4. Sombra suave para dar profundidad */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+.fi-sidebar-nav {
+    background: #ebd6ae
+}
+
+/* color de boton de genera */
+.bg-\[\#4E2C0F\] {
+    background-color: #f7c057 !important; /* Marrón oscuro para el botón "Generar" */
+}

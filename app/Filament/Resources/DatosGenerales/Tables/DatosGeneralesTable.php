@@ -48,12 +48,12 @@ class DatosGeneralesTable
                     ->color('success')
                     ->icon('heroicon-m-map'),
 
-                TextColumn::make('altitud_m')
-                    ->label('Altitud')
-                    ->suffix(' msnm')
-                    ->icon('heroicon-m-chevron-double-up') // Cambio de icono para evitar errores
-                    ->toggleable()
-                    ->color('gray'),
+                // TextColumn::make('altitud_m')
+                //     ->label('Altitud')
+                //     ->suffix(' msnm')
+                //     ->icon('heroicon-m-chevron-double-up') // Cambio de icono para evitar errores
+                //     ->toggleable()
+                //     ->color('gray'),
 
                 // CORRECCIÓN DEL ICONO ORGÁNICO
                 IconColumn::make('certificado_organico')
@@ -82,16 +82,20 @@ class DatosGeneralesTable
                     ->toggleable()
                     ->color('gray'),
 
-                TextColumn::make('lluvia_media_mm')
-                    ->label('Lluvia')
-                    ->suffix(' mm')
-                    ->icon('heroicon-m-cloud') // Cloud es más seguro en compatibilidad
-                    ->toggleable()
-                    ->color('info'),
+                // TextColumn::make('lluvia_media_mm')
+                //     ->label('Lluvia')
+                //     ->suffix(' mm')
+                //     ->icon('heroicon-m-cloud') // Cloud es más seguro en compatibilidad
+                //     ->toggleable()
+                //     ->color('info'),
             ])
             ->filters([])
             ->recordActions([
                 EditAction::make(),
+                \Filament\Actions\DeleteAction::make()
+                    ->label('Eliminar')
+                    ->icon('heroicon-m-trash')
+                    ->color('danger'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

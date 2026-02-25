@@ -81,6 +81,10 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make(),
+                \Filament\Actions\DeleteAction::make()
+                    ->label('Eliminar')
+                    ->icon('heroicon-m-trash')
+                    ->color('danger'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

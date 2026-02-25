@@ -22,7 +22,9 @@ class RegistroDeAtividades extends Model
         'hora',
         'tipo_actividad',
         'descripcion',
-        'duracion_minutos',
+        //'duracion_minutos',
+        'hora_inicio',
+        'hora_fin',
         'materiales_usados',
         'producto_aplicado',
         'cantidad_producto',
@@ -35,7 +37,8 @@ class RegistroDeAtividades extends Model
 
     protected $casts = [
         'fecha' => 'date',
-        'hora' => 'string',
+        'hora_inicio' => 'string',
+        'hora_fin' => 'string',
         'cantidad_producto' => 'decimal:2',
         'duracion_minutos' => 'integer',
     ];

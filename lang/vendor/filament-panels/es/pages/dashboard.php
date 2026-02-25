@@ -2,7 +2,7 @@
 
 return [
 
-    'title' => 'Panel de control',
+    'title' => 'Inicio',
 
     'actions' => [
 

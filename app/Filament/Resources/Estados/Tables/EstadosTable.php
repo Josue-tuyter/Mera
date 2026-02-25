@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Estados\Tables;
 
-use Filament\Actions\EditAction as ActionsEditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Actions\EditAction;
+use Illuminate\Support\Str;
+use Filament\Actions\EditAction as ActionsEditAction;
+
 
 class EstadosTable
 {
@@ -15,16 +17,18 @@ class EstadosTable
         return $table
             ->columns([
                 Stack::make([
-                    // Título del Estado
+                    // Título del Estado (Sin guiones bajos)
                     TextColumn::make('nombre')
                         ->weight('bold')
                         ->size('lg')
                         ->alignCenter()
+                        // Reemplaza "_" por espacio y pone la primera en mayúscula
+                        ->formatStateUsing(fn (string $state): string => ucfirst(str_replace('_', ' ', $state)))
                         ->extraAttributes([
                             'style' => 'text-transform: uppercase; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 10px;'
                         ]),
 
-                    // Lista de Actividades (Texto Simple)
+                    // Lista de Actividades (Tareas)
                     TextColumn::make('id') 
                         ->label('Tareas')
                         ->html()
@@ -37,9 +41,11 @@ class EstadosTable
 
                             $html = '<ul style="list-style-type: disc; margin-left: 1.5rem; text-align: left; color: #4b5563;">';
                             foreach ($actividades as $actividad) {
-                                // Mostramos solo el nombre/tipo de actividad sin link
+                                // Limpiamos el nombre de la actividad también aquí
+                                $nombreLimpio = ucfirst(str_replace('_', ' ', $actividad->tipo_actividad ?? 'Sin nombre'));
+                                
                                 $html .= "<li style='margin-bottom: 2px; font-size: 0.9rem;'>
-                                    " . ($actividad->tipo_actividad ?? 'Sin nombre') . "
+                                    {$nombreLimpio}
                                 </li>";
                             }
                             $html .= '</ul>';
@@ -65,7 +71,7 @@ class EstadosTable
             ])
             ->paginated(false)
             ->actions([
-                ActionsEditAction::make()->label('Editar Estado'),
+                ActionsEditAction::make()->label('Editar Estado')
             ]);
     }
 }

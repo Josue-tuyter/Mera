@@ -25,10 +25,10 @@ class ResumenStock extends BaseWidget
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'), // Amarillo/Oro Cacao
 
-            Stat::make('Mantenimientos Próximos', EquiposYHerramienta::whereDate('proximo_mantenimiento', '<=', now()->addDays(7))->count())
-                ->description('Próximos 7 días')
-                ->descriptionIcon('heroicon-m-wrench-screwdriver')
-                ->color('warning'), // Bronce Cacao
+            // Stat::make('Mantenimientos Próximos', EquiposYHerramienta::whereDate('proximo_mantenimiento', '<=', now()->addDays(7))->count())
+            //     ->description('Próximos 7 días')
+            //     ->descriptionIcon('heroicon-m-wrench-screwdriver')
+            //     ->color('warning'), // Bronce Cacao
         ];
     }
 }

@@ -20,13 +20,19 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
+    // 1. Cambia el título de la sección en el menú lateral
+    protected static ?string $navigationLabel = 'Estructura organizacional';
+
+    // 2. Cambia el nombre en singular (ej. para el botón "Crear...")
+    protected static ?string $modelLabel = 'Usuaraio';
+
+    // 3. Cambia el nombre en plural (ej. el título principal de la tabla)
+    protected static ?string $pluralModelLabel = 'Estructura organizacional';
+
+    // Opcional: Si quieres que el icono coincida con "Estructura"
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
     protected static string | UnitEnum | null $navigationGroup = 'Configuración';
-
-    protected static ?string $recordTitleAttribute = 'Estructura organizacional';
-
-    protected static ?string $navigationLabel = 'Estructura organizacional';
 
     public static function form(Schema $schema): Schema
     {

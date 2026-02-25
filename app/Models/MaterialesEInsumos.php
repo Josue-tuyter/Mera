@@ -5,46 +5,43 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-use App\Models\RegistroActividadMaterial;
-use App\Models\RegistroDeAtividades;
-use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class MaterialesEInsumos extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'materiales_e_insumos';
+
     protected $fillable = [
-        'nombre',
+        'nombre', 
+        'categoria',
+        'tipo',
         'descripcion',
         'stock',
         'unidad',
         'stock_minimo',
         'proveedor',
-        'lote',
         'fecha_vencimiento',
         'responsable_id',
     ];
 
-    public function registros()
-    {
-        return $this->belongsToMany(RegistroDeAtividades::class, 'registro_actividad_material')
-            ->using(RegistroActividadMaterial::class)
-            ->withPivot(['cantidad', 'unidad_aplicada'])
-            ->withTimestamps();
-    }
-
-
-    public function responsable()
+    public function responsable(): BelongsTo
     {
         return $this->belongsTo(User::class, 'responsable_id');
     }
 
-
-    public function getNecesitaReabastecimientoAttribute(): bool
+    public function registros(): BelongsToMany
     {
-        return $this->cantidad <= $this->stock_minimo;
+        return $this->belongsToMany(RegistroDeAtividades::class, 'registro_actividad_material')
+            ->withPivot(['cantidad', 'unidad_aplicada'])
+            ->withTimestamps();
     }
 
-
+    // Accessor para saber si falta stock
+    public function getNecesitaReabastecimientoAttribute(): bool
+    {
+        return $this->stock <= $this->stock_minimo;
+    }
 }

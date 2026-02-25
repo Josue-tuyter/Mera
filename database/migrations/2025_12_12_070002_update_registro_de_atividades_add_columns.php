@@ -28,9 +28,11 @@ return new class extends Migration
             if (! Schema::hasColumn('registro_de_atividades', 'descripcion')) {
                 $table->text('descripcion')->nullable();
             }
-            if (! Schema::hasColumn('registro_de_atividades', 'duracion_minutos')) {
-                $table->integer('duracion_minutos')->nullable();
-            }
+            // if (! Schema::hasColumn('registro_de_atividades', 'duracion_minutos')) {
+            //     $table->integer('duracion_minutos')->nullable();
+            // }
+            $table->time('hora_inicio')->default('07:00');
+            $table->time('hora_fin')->default('08:00');
             if (! Schema::hasColumn('registro_de_atividades', 'materiales_usados')) {
                 $table->text('materiales_usados')->nullable();
             }

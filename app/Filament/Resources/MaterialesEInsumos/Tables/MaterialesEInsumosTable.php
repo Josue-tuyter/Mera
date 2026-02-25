@@ -4,16 +4,15 @@ namespace App\Filament\Resources\MaterialesEInsumos\Tables;
 
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction as ActionsEditAction;
-use Filament\Actions\BulkActionGroup;
 
 class MaterialesEInsumosTable
 {
@@ -21,11 +20,11 @@ class MaterialesEInsumosTable
     {
         return $table
             ->columns([
-                // Imagen descriptiva (opcional, si tienes un campo o quieres un icono fijo)
+                // Imagen descriptiva
                 ImageColumn::make('foto_insumo')
                     ->label('Foto')
                     ->circular()
-                    ->defaultImageUrl(url('/images/imgs/insumo.png')) // Asegúrate de tener esta imagen
+                    ->defaultImageUrl(url('/images/imgs/insumo.png')) 
                     ->size(45),
 
                 // Nombre con descripción
@@ -37,20 +36,39 @@ class MaterialesEInsumosTable
                     ->color('primary')
                     ->description(fn ($record) => $record->descripcion ? str($record->descripcion)->limit(40) : 'Sin descripción'),
 
+                // NUEVO: Categoría (Labor) con colores distintivos
+                TextColumn::make('categoria')
+                    ->label('Labor / Categoría')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Poda' => 'info',
+                        'Deshierba' => 'success',
+                        'Fertilizacion' => 'warning',
+                        'Plagas' => 'danger',
+                        'Sombra' => 'gray',
+                        'Riego' => 'primary',
+                        default => 'gray',
+                    })
+                    ->sortable(),
+
+                // NUEVO: Tipo (Herramienta vs Insumo)
+                TextColumn::make('tipo')
+                    ->label('Tipo')
+                    ->fontFamily('mono')
+                    ->size('xs'),
+
                 // Stock con indicador de color (Badges)
                 TextColumn::make('stock')
                     ->label('Stock Actual')
-                    ->numeric()
                     ->sortable()
                     ->alignCenter()
                     ->weight('bold')
                     ->badge()
-                    // Color dinámico: Rojo si es menor al mínimo, Naranja si está cerca, Verde si está bien
                     ->color(fn ($record) => 
                         $record->stock <= $record->stock_minimo ? 'danger' : 
-                        ($record->stock <= $record->stock_minimo * 1.5 ? 'warning' : 'success')
+                        ($record->stock <= $record->stock_minimo * 1.2 ? 'warning' : 'success')
                     )
-                    ->formatStateUsing(fn ($state, $record) => "{$state} {$record->unidad}"),
+                    ->formatStateUsing(fn ($state, $record) => (float)$state . " {$record->unidad}"),
 
                 // Vencimiento con alerta
                 TextColumn::make('fecha_vencimiento')
@@ -63,33 +81,29 @@ class MaterialesEInsumosTable
                         $state && Carbon::parse($state)->isPast() ? 'danger' : 
                         ($state && Carbon::parse($state)->diffInDays(now()) < 30 ? 'warning' : 'gray')
                     )
+                    ->placeholder('N/A')
                     ->toggleable(),
 
-                // Datos logísticos resumidos
-                TextColumn::make('lote')
-                    ->label('Lote/Prov.')
-                    ->description(fn ($record) => "Prov: " . ($record->proveedor ?? 'N/A'))
-                    ->toggleable(),
-
-                // Responsable con Icono
+                // Responsable
                 TextColumn::make('responsable.name')
                     ->label('Responsable')
                     ->icon('heroicon-m-user')
                     ->toggleable()
-                    ->searchable(),
-
-                // Estado activo/inactivo con iconos
-                IconColumn::make('activo')
-                    ->label('Estatus')
-                    ->boolean()
-                    ->trueIcon('heroicon-s-check-circle')
-                    ->falseIcon('heroicon-s-minus-circle')
-                    ->trueColor('success')
-                    ->falseColor('gray')
-                    ->alignCenter()
-                    ->sortable(),
+                    ->searchable(), 
             ])
             ->filters([
+                // Filtro por Labor
+                SelectFilter::make('categoria')
+                    ->label('Filtrar por Labor')
+                    ->options([
+                        'Poda' => 'Poda',
+                        'Deshierba' => 'Deshierba',
+                        'Fertilizacion' => 'Fertilización',
+                        'Plagas' => 'Control de Plagas',
+                        'Sombra' => 'Manejo de Sombra',
+                        'Riego' => 'Riego',
+                    ]),
+
                 SelectFilter::make('responsable_id')
                     ->label('Responsable')
                     ->relationship('responsable', 'name')
@@ -104,18 +118,17 @@ class MaterialesEInsumosTable
                     ->label('🚫 Vencidos')
                     ->query(fn(Builder $query) => $query->where('fecha_vencimiento', '<', now())),
             ])
-            ->actions([ 
-                ActionsEditAction::make()
-                    ->label('Editar')
-                    ->icon('heroicon-m-pencil')
-                    ->color('primary'),
+            ->actions([
+                //EditAction::make(),
+                //DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+            ->bulkActions([
+                // BulkActionGroup::make([
+                //     //DeleteBulkAction::make(),
+                // ]),
             ])
-            ->striped() // Añade filas cebra para mejor lectura
+            ->striped()
+            ->defaultSort('categoria') // Ordenar por labor por defecto
             ->emptyStateHeading('No hay insumos registrados')
             ->emptyStateIcon('heroicon-o-beaker');
     }

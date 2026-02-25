@@ -51,13 +51,13 @@ class EquiposYHerramientasTable
                     ->alignCenter(),
 
                 // Mantenimiento
-                TextColumn::make('proximo_mantenimiento')
-                    ->label('Mantenimiento')
-                    ->date('d M, Y')
-                    ->sortable()
-                    ->badge()
-                    ->color(fn ($state) => $state && Carbon::parse($state)->isPast() ? 'danger' : 'warning')
-                    ->icon('heroicon-m-calendar'),
+                // TextColumn::make('proximo_mantenimiento')
+                //     ->label('Mantenimiento')
+                //     ->date('d M, Y')
+                //     ->sortable()
+                //     ->badge()
+                //     ->color(fn ($state) => $state && Carbon::parse($state)->isPast() ? 'danger' : 'warning')
+                //     ->icon('heroicon-m-calendar'),
 
                 TextColumn::make('ubicacion')
                     ->label('Ubicación')
@@ -72,7 +72,8 @@ class EquiposYHerramientasTable
                     ->label('Costo')
                     ->money('USD')
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->formatStateUsing(fn ($state) => intval($state)),
             ])
             ->filters([
                 SelectFilter::make('responsable_id')
@@ -81,13 +82,14 @@ class EquiposYHerramientasTable
                     ->searchable()
                     ->preload(),
 
-                Filter::make('needing_maintenance')
-                    ->label('Necesita mantenimiento')
-                    ->query(fn (Builder $query) => $query->where('proximo_mantenimiento', '<=', now())),
             ])
             // AQUÍ ESTÁ LA SOLUCIÓN: USAMOS LA RUTA COMPLETA CON "\" AL INICIO
             ->actions([ 
                 ActionsEditAction::make(),
+                \Filament\Actions\DeleteAction::make()
+                    ->label('Eliminar')
+                    ->icon('heroicon-m-trash')
+                    ->color('danger'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

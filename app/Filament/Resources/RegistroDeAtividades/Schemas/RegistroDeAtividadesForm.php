@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Repeater;
 use App\Models\MaterialesEInsumos;
+use App\Models\RegistroDeAtividades;
 
 class RegistroDeAtividadesForm
 {
@@ -21,49 +22,84 @@ class RegistroDeAtividadesForm
         return $schema
             ->components([
 
-                // SECCIÓN 1: TIEMPO Y TIPO - FONDO MARRÓN CACAO
-                Section::make('Planificación de la Actividad')
-                    ->description('Define cuándo y qué tipo de labor se realizó.')
-                    ->icon('heroicon-o-calendar-days')
-                    ->extraAttributes([
-                        'class' => 'bg-[#4E2C0F]/5 border-t-4 border-[#4E2C0F] rounded-xl shadow-sm',
-                    ])
-                    ->schema([
-                        FusedGroup::make([
+                    // SECCIÓN 1: TIEMPO Y TIPO
+                    Section::make('Planificación de la Actividad')
+                        ->description('Define el horario y tipo de labor realizada.')
+                        ->icon('heroicon-o-calendar-days')
+                        ->extraAttributes([
+                            'class' => 'bg-[#4E2C0F]/5 border-t-4 border-[#4E2C0F] rounded-xl shadow-sm',
+                        ])
+                        ->schema([
+                            // Campo de fecha ocupa toda la fila o mitad según desees
                             DatePicker::make('fecha')
-                                ->label('Fecha')
+                                ->label('Fecha de la Actividad')
                                 ->placeholder('Selecciona la fecha')
-                                ->minDate(today())
                                 ->native(false)
-                                ->required(),
+                                ->required()
+                                ->live()
+                                ->minDate(today()) 
+                                    ->validationMessages([
+                                        'min_date' => 'No puedes seleccionar una fecha anterior a hoy.',
+                                    ])
+                                ->columnSpan(2), // Ocupa el ancho completo de la sección
 
-                            TimePicker::make('hora')
+                            // Grupo de Horas: Inicio y Fin
+                            TimePicker::make('hora_inicio')
                                 ->label('Hora Inicio')
-                                ->nullable(),
-                        ]),
+                                ->default('07:00')
+                                ->seconds(false)
+                                ->required()
+                                ->native(false)
+                                ->live(),
 
-                        Select::make('tipo_actividad')
-                            ->label('Tipo de Actividad')
-                            ->options([
-                                'poda' => 'Poda',
-                                'riego' => 'Riego',
-                                'fertilizacion' => 'Fertilización',
-                                'control_plagas' => 'Control de plagas',
-                                'inspeccion' => 'Inspección',
-                            ])
-                            ->required()
-                            ->native(false),
+                            TimePicker::make('hora_fin')
+                                ->label('Hora Fin')
+                                ->seconds(false)
+                                ->required()
+                                ->native(false)
+                                ->live()
+                                // Validación para asegurar que la hora fin sea después de la inicio
+                                ->after('hora_inicio')
+                                ->validationMessages([
+                                    'after' => 'La hora de fin debe ser posterior a la de inicio',
+                                    'required' => 'La hora de fin es obligatoria',
+                                ]),
 
-                        TextInput::make('duracion_minutos')
-                            ->label('Duración')
-                            ->numeric()
-                            ->suffix('minutos')
-                            ->minValue(1)
-                            ->placeholder('Ej: 60'),
-                    ])
-                    ->columns(2),
+                            Select::make('tipo_actividad')
+                                ->label('Tipo de Actividad')
+                                ->options([
+                                    'poda' => 'Poda',
+                                    'riego' => 'Riego',
+                                    'fertilizacion' => 'Fertilización',
+                                    'control_plagas' => 'Control de plagas',
+                                    'inspeccion' => 'Inspección',
+                                ])
+                                ->required()
+                                ->native(false)
+                                ->live()
+                                ->columnSpan(2) // Ocupa el ancho completo
+                                ->rules([
+                                    fn ($get) => function (string $attribute, $value, $fail) use ($get) {
+                                        $fecha = $get('fecha');
+                                        $parcela = $get('parcela');
+                                        
+                                        if (!$fecha || !$parcela || !$value) return;
 
-                // SECCIÓN 2: UBICACIÓN Y RESPONSABLES - FONDO VERDE FOLLAJE
+                                        $existe = RegistroDeAtividades::where('fecha', $fecha)
+                                            ->where('parcela', $parcela)
+                                            ->where('tipo_actividad', $value)
+                                            ->when($get('id'), fn($query, $id) => $query->where('id', '!=', $id))
+                                            ->exists();
+
+                                        if ($existe) {
+                                            $fail("Ya existe una actividad de '{$value}' registrada para la parcela '{$parcela}' en esta fecha.");
+                                        }
+                                    },
+                                ]),
+                        ])
+                        ->columns(2),
+
+                // SECCIÓN 2: UBICACIÓN Y RESPONSABLES
                 Section::make('Ubicación y Responsables')
                     ->icon('heroicon-o-map-pin')
                     ->extraAttributes([
@@ -78,9 +114,16 @@ class RegistroDeAtividadesForm
                             ->required(),
 
                         TextInput::make('parcela')
-                            ->label('Parcela / Sector')
-                            ->placeholder('Ej: Lote A-1')
-                            ->regex('/^[a-zA-Z0-9\\-\\/\\s]+$/'),
+                            ->label('Lote')
+                            ->placeholder('Ej: 1')
+                            ->live()
+                            ->required()
+                            ->numeric()
+                            // --- ESTAS SON LAS LÍNEAS QUE DEBES AÑADIR ---
+                            ->minValue(1) // No permite números menores a 1 (adiós negativos y cero)
+                            ->validationMessages([
+                                'min' => 'El número de lote debe ser al menos 1.',
+                            ]),
 
                         Select::make('organizacion_id')
                             ->label('Organización')
@@ -96,7 +139,7 @@ class RegistroDeAtividadesForm
                     ])
                     ->columns(2),
 
-                // SECCIÓN 3: RECURSOS UTILIZADOS - FONDO AMARILLO MAZORCA
+                // SECCIÓN 3: RECURSOS UTILIZADOS
                 Section::make('Insumos y Herramientas')
                     ->description('Registro de materiales aplicados y maquinaria usada.')
                     ->icon('heroicon-o-wrench-screwdriver')
@@ -114,6 +157,8 @@ class RegistroDeAtividadesForm
                                     ->searchable()
                                     ->required()
                                     ->reactive()
+                                    // ESTO EVITA REPETIR EL MISMO MATERIAL EN EL REPEATER
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->afterStateUpdated(fn ($set, $state) => 
                                         $set('unidad_aplicada', MaterialesEInsumos::find($state)?->unidad)
                                     )

@@ -32,24 +32,8 @@ class AdminPanelProvider extends PanelProvider
         ->path('admin')
 
         ->font('SN Pro')
-        
         ->login()
-
-        //->login(\App\Filament\Pages\Auth\Login::class)
-
-
-            // ->loginRouteSlug('login')
-            // ->registrationRouteSlug('register')
-            // ->passwordResetRoutePrefix('password-reset')
-            // ->passwordResetRequestRouteSlug('request')
-            // ->passwordResetRouteSlug('reset')
-            // ->emailVerificationRoutePrefix('email-verification')
-            // ->emailVerificationPromptRouteSlug('prompt')
-            // ->emailVerificationRouteSlug('verify')
-            // ->emailChangeVerificationRoutePrefix('email-change-verification')
-            // ->emailChangeVerificationRouteSlug('verify')
-
-
+        ->passwordReset() 
 
             //para que le nav salga arriba
             //->topNavigation()

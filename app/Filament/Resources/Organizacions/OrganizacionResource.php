@@ -23,7 +23,15 @@ class OrganizacionResource extends Resource
 
     protected static string | UnitEnum | null $navigationGroup = 'Gestión de actividades';
 
-    protected static ?string $recordTitleAttribute = 'Organizacion de tareas';
+    // Etiquetas para el Frontend
+    protected static ?string $navigationLabel = 'Organización';
+
+    protected static ?string $modelLabel = 'Organización';
+
+    protected static ?string $pluralModelLabel = 'Organizaciones';
+
+    // Atributo de búsqueda/título (Asegúrate que 'nombre' o similar exista en tu DB)
+    protected static ?string $recordTitleAttribute = 'nombre';
 
     public static function form(Schema $schema): Schema
     {

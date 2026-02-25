@@ -76,24 +76,24 @@ class DatosGeneralesForm
                             ->suffix('ha')
                             ->step(0.01),
 
-                        TextInput::make('altitud_m')
-                            ->label('Altitud')
-                            ->numeric()
-                            ->suffix('msnm'),
+                        // TextInput::make('altitud_m')
+                        //     ->label('Altitud')
+                        //     ->numeric()
+                        //     ->suffix('msnm'),
 
-                        FusedGroup::make([
-                            TextInput::make('lat')
-                                ->label('Latitud')
-                                ->numeric()
-                                ->step(0.0001)
-                                ->placeholder('latitud'),
+                        // FusedGroup::make([
+                        //     TextInput::make('lat')
+                        //         ->label('Latitud')
+                        //         ->numeric()
+                        //         ->step(0.0001)
+                        //         ->placeholder('latitud'),
 
-                            TextInput::make('lng')
-                                ->label('Longitud')
-                                ->numeric()
-                                ->step(0.0001)
-                                ->placeholder('longitud'),
-                        ])->label('Coordenadas GPS'),
+                        //     TextInput::make('lng')
+                        //         ->label('Longitud')
+                        //         ->numeric()
+                        //         ->step(0.0001)
+                        //         ->placeholder('longitud'),
+                        // ])->label('Coordenadas GPS'),
                     ])
                     ->columns(2),
 
@@ -111,16 +111,16 @@ class DatosGeneralesForm
                         TextInput::make('tipo_suelo')
                             ->label('Tipo de Suelo'),
 
-                        TextInput::make('lluvia_media_mm')
-                            ->label('Pluviometría Media')
-                            ->numeric()
-                            ->suffix('mm/año'),
+                        // TextInput::make('lluvia_media_mm')
+                        //     ->label('Pluviometría Media')
+                        //     ->numeric()
+                        //     ->suffix('mm/año'),
 
-                        Toggle::make('certificado_organico')
-                            ->label('¿Posee Certificación Orgánica?')
-                            ->onIcon('heroicon-m-check')
-                            ->offIcon('heroicon-m-x-mark')
-                            ->inline(false),
+                        // Toggle::make('certificado_organico')
+                        //     ->label('¿Posee Certificación Orgánica?')
+                        //     ->onIcon('heroicon-m-check')
+                        //     ->offIcon('heroicon-m-x-mark')
+                        //     ->inline(false),
                     ])
                     ->columns(2),
 

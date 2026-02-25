@@ -20,7 +20,6 @@ class EquiposYHerramienta extends Model
         'serial',
         'disponible',
         'fecha_ultimo_mantenimiento',
-        'proximo_mantenimiento',
         'intervalo_mantenimiento_dias',
         'ubicacion',
         'responsable_id',

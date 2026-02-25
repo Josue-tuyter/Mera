@@ -4,14 +4,12 @@ namespace App\Filament\Resources\EquiposYHerramientas\Schemas;
 
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\FileUpload;
 
 class EquiposYHerramientaForm
 {
@@ -20,7 +18,7 @@ class EquiposYHerramientaForm
         return $schema
             ->components([
                 
-                // SECCIÓN 1: IDENTIFICACIÓN - FONDO MARRÓN CACAO
+                // SECCIÓN 1: IDENTIFICACIÓN
                 Section::make('Identificación del Equipo')
                     ->description('Escribe los datos del equipo.')
                     ->icon('heroicon-o-identification')
@@ -33,26 +31,32 @@ class EquiposYHerramientaForm
                                 ->label('Nombre')
                                 ->required()
                                 ->maxLength(100)
+                                // VALIDACIÓN DE UNICIDAD: evita nombres duplicados
+                                ->unique(ignoreRecord: true)
                                 ->regex('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$/')
                                 ->validationMessages([
                                     'regex' => 'Solo se permiten letras, espacios y guiones',
+                                    'unique' => 'Ya existe un equipo registrado con este nombre',
                                 ])
-                                ->live(),
+                                ->live(onBlur: true),
 
                             TextInput::make('serial')
                                 ->label('Serial')
                                 ->nullable()
                                 ->maxLength(50)
+                                // VALIDACIÓN DE UNICIDAD: evita seriales duplicados
+                                ->unique(ignoreRecord: true)
                                 ->regex('/^[a-zA-Z0-9\-\/]+$/')
                                 ->validationMessages([
                                     'regex' => 'Solo se permiten letras, números, guiones y barras',
+                                    'unique' => 'Este número de serial ya está asignado a otro equipo',
                                 ])
-                                ->live(),
+                                ->live(onBlur: true),
                         ])->columnSpan(2),
                     ])
-                    ->columns(3),
+                    ->columns(2),
 
-                // SECCIÓN 2: UBICACIÓN - FONDO VERDE FOLLAJE
+                // SECCIÓN 2: UBICACIÓN
                 Section::make('Ubicación y Gestión')
                     ->icon('heroicon-o-map-pin')
                     ->extraAttributes([
@@ -62,27 +66,23 @@ class EquiposYHerramientaForm
                         TextInput::make('ubicacion')
                             ->label('Ubicación')
                             ->maxLength(100)
-                            ->placeholder('Ej: Bodega Principal')
-                            ->nullable(),
+                            ->placeholder('Ej: Bodega Principal'),
 
                         Select::make('responsable_id')
                             ->label('Responsable')
                             ->relationship('responsable', 'name')
                             ->searchable()
-                            ->preload()
-                            ->nullable(),
+                            ->preload(),
 
                         Textarea::make('descripcion')
                             ->label('Descripción Detallada')
                             ->maxLength(500)
                             ->rows(3)
-                            ->nullable()
-                            ->helperText('Máximo 500 caracteres')
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
 
-                // SECCIÓN 3: MANTENIMIENTO - FONDO AMARILLO MAZORCA
+                // SECCIÓN 3: MANTENIMIENTO
                 Section::make('Control de Mantenimiento')
                     ->icon('heroicon-o-wrench-screwdriver')
                     ->extraAttributes([
@@ -91,43 +91,22 @@ class EquiposYHerramientaForm
                     ->schema([
                         DatePicker::make('fecha_ultimo_mantenimiento')
                             ->label('Último mantenimiento')
-                            ->nullable()
                             ->native(false),
-
-                        DatePicker::make('proximo_mantenimiento')
-                            ->label('Próximo mantenimiento')
-                            ->nullable()
-                            ->reactive()
-                            ->native(false)
-                            ->minDate(today())
-                            ->rules([
-                                'nullable',
-                                'date',
-                                'after_or_equal:today',
-                            ])
-                            ->validationMessages([
-                                'after_or_equal' => 'No se permiten fechas pasadas',
-                            ]),
-
-                        TextInput::make('costo_mantenimiento_estimado')
-                            ->label('Costo mantenimiento estimado')
-                            ->numeric()
-                            ->minValue(0)
-                            ->maxValue(999999.99)
-                            ->step(0.01)
-                            ->suffix('USD')
-                            ->prefix('$')
-                            ->nullable(),
 
                         TextInput::make('intervalo_mantenimiento_dias')
                             ->label('Intervalo mantenimiento (días)')
                             ->numeric()
                             ->minValue(1)
-                            ->maxValue(9999)
-                            ->nullable()
-                            ->visible(fn ($get) => $get('proximo_mantenimiento') !== null),
+                            ->maxValue(9999),
+
+                        TextInput::make('costo_mantenimiento_estimado')
+                            ->label('Costo mantenimiento estimado')
+                            ->numeric()
+                            ->prefix('$')
+                            ->suffix('USD')
+                            ->step(0.01),
                     ])
-                    ->columns(2),
+                    ->columns(1),
 
                 // SECCIÓN 4: ESTADO
                 Section::make()

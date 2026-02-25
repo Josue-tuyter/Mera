@@ -51,32 +51,32 @@ class OrganizacionForm
                 Section::make('Planificación y Seguimiento')
                     ->description('Gestiona los plazos y la urgencia.')
                     ->schema([
-                        Grid::make(2)->schema([
-                            Select::make('status')
-                                ->label('Estado Actual')
-                                ->options([
-                                    'pendiente' => 'Pendiente ⏳',
-                                    'en_progreso' => 'En Progreso 🚧',
-                                    'revision' => 'En Revisión 👀',
-                                    'completado' => 'Completado ✅',
-                                    'cancelado' => 'Cancelado 🚫',
-                                ])
-                                ->default('pendiente')
-                                ->required()
-                                ->native(false),
+                //         Grid::make(2)->schema([
+                //             Select::make('status')
+                //                 ->label('Estado Actual')
+                //                 ->options([
+                //                     'pendiente' => 'Pendiente ⏳',
+                //                     'en_progreso' => 'En Progreso 🚧',
+                //                     'revision' => 'En Revisión 👀',
+                //                     'completado' => 'Completado ✅',
+                //                     'cancelado' => 'Cancelado 🚫',
+                //                 ])
+                //                 ->default('pendiente')
+                //                 ->required()
+                //                 ->native(false),
 
-                            Select::make('prioridad')
-                                ->label('Nivel de Prioridad')
-                                ->options([
-                                    'baja' => 'Baja 🟢',
-                                    'media' => 'Media 🟡',
-                                    'alta' => 'Alta 🔴',
-                                    'urgente' => 'Urgente 🔥',
-                                ])
-                                ->default('media')
-                                ->required()
-                                ->native(false),
-                        ]),
+                //             // Select::make('prioridad')
+                //             //     ->label('Nivel de Prioridad')
+                //             //     ->options([
+                //             //         'baja' => 'Baja 🟢',
+                //             //         'media' => 'Media 🟡',
+                //             //         'alta' => 'Alta 🔴',
+                //             //         'urgente' => 'Urgente 🔥',
+                //             //     ])
+                //             //     ->default('media')
+                //             //     ->required()
+                //             //     ->native(false),
+                //         ]),
 
                         Grid::make(2)->schema([
                             DatePicker::make('fecha_inicio')

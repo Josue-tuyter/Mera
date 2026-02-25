@@ -82,7 +82,7 @@ class UserForm
                             ])
                             // Evita sobreescribir la contraseña si se deja en blanco al editar
                             ->dehydrated(fn ($state) => filled($state))
-                            ->dehydrateStateUsing(fn ($state) => Hash::make($state)),
+                            
 
                         // Podrías añadir aquí un Select de "Rol" o "Estado" en el futuro
                     ])

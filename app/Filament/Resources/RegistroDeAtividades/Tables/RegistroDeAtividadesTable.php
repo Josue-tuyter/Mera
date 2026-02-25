@@ -24,8 +24,7 @@ class RegistroDeAtividadesTable
                     ->label('Programación')
                     ->date('d/m/Y')
                     ->sortable()
-                    ->weight('bold')
-                    ->description(fn ($record) => "Hora: " . ($record->hora ?? '--:--')),
+                    ->weight('bold'),
 
                 // Tipo de Actividad con Iconos específicos
                 TextColumn::make('tipo_actividad')
@@ -148,6 +147,10 @@ class RegistroDeAtividadesTable
             ])
             ->recordActions([
                 EditAction::make(),
+                \Filament\Actions\DeleteAction::make()
+                    ->label('Eliminar')
+                    ->icon('heroicon-m-trash')
+                    ->color('danger'),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

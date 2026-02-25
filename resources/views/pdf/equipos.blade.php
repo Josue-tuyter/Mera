@@ -24,9 +24,9 @@
                 <td>
                     {{ $equipo->disponible ? 'Sí' : 'No' }}
                 </td>
-                <td>
-                    {{ optional($equipo->proximo_mantenimiento)->format('d/m/Y') ?? '-' }}
-                </td>
+                {{-- <td>
+                    //{{ optional($equipo->proximo_mantenimiento)->format('d/m/Y') ?? '-' }}
+                </td> --}}
                 <td>
                     $ {{ number_format($equipo->costo_mantenimiento_estimado ?? 0, 2) }}
                 </td>

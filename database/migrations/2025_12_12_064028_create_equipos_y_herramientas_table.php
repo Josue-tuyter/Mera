@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('serial')->nullable();
             $table->boolean('disponible')->default(true);
             $table->date('fecha_ultimo_mantenimiento')->nullable();
-            $table->date('proximo_mantenimiento')->nullable();
+            //$table->date('proximo_mantenimiento')->nullable();
             $table->unsignedInteger('intervalo_mantenimiento_dias')->nullable();
             $table->string('ubicacion')->nullable();
             $table->foreignId('responsable_id')->nullable()->constrained('users')->nullOnDelete();

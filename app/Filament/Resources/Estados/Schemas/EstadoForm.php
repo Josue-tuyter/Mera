@@ -50,23 +50,25 @@ class EstadoForm
                     'class' => 'bg-[#606C38]/5 border-t-4 border-[#606C38] rounded-xl shadow-sm',
                 ])
                 ->schema([
-                    Slider::make('porcentaje_avance')
-                        ->label('Porcentaje de Avance (%)')
-                        ->helperText('Indica cuánto progreso representa este estado (0% a 100%).')
-                        ->minValue(0)
-                        ->maxValue(100)
-                        ->step(1)
-                        ->default(0)
-                        ->columnSpanFull(),
+                Slider::make('porcentaje_avance')
+                    // El label se actualiza en tiempo real mientras mueves el slider
+                    ->label(fn ($state) => "Progreso actual: " . ($state ?? 0) . "%")
+                    ->helperText('Desliza para ajustar el avance de este estado.')
+                    ->minValue(0)
+                    ->maxValue(100)
+                    ->step(1)
+                    ->default(0)
+                    ->live() // Esto es lo que permite que el label cambie mientras mueves el mouse
+                    ->columnSpanFull(),
 
-                    Select::make('organizacion_id')
-                        ->label('Organización Relacionada')
-                        ->relationship('organizacion', 'nombre')
-                        ->prefixIcon('heroicon-m-building-library')
-                        ->searchable()
-                        ->preload()
-                        ->nullable()
-                        ->columnSpanFull(),
+                    // Select::make('organizacion_id')
+                    //     ->label('Organización Relacionada')
+                    //     ->relationship('organizacion', 'nombre')
+                    //     ->prefixIcon('heroicon-m-building-library')
+                    //     ->searchable()
+                    //     ->preload()
+                    //     ->nullable()
+                    //     ->columnSpanFull(),
                 ])
                 ->columns(1),
         ];
